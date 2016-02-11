@@ -17,6 +17,10 @@ function neoman#get_page(...) abort
     return
   elseif a:0 == 1
     let [page, sect] = [expand('<cword>'), '']
+    if empty(page)
+      redraws! | echon "neoman: " | echohl ErrorMsg | echon "no identifier under cursor" | echohl None
+      return 1
+    endif
   elseif a:0 == 2
     let [page, sect] = [a:2, '']
   elseif a:0 == 3
@@ -24,8 +28,8 @@ function neoman#get_page(...) abort
   endif
 
   let [page, sect] = s:parse_page_and_section(sect, page)
-  if s:find_page(sect, page)
-    echo 'No manual entry for '.page
+  if !s:find_page(sect, page)
+    redraws! | echon "neoman: " | echohl ErrorMsg | echon "no manual entry for " . page | echohl None
     return 1
   endif
   exec 'let s:man_tag_buf_'.s:man_tag_depth.' = '.bufnr('%')
@@ -109,10 +113,10 @@ function s:find_page(sect, page) abort
   let where = system('/usr/bin/man '.s:man_find_arg.' '.s:cmd(a:sect, a:page))
   if where !~ "^/"
     if matchstr(where, " [^ ]*$") !~ "^ /"
-      return 1
+      return 0
     endif
   endif
-  return 0
+  return 1
 endfunction
 
 function! neoman#Complete(ArgLead, CmdLine, CursorPos) abort

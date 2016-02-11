@@ -134,3 +134,4 @@ Only setting is `g:neoman_current_window`. This is explained above in the [comma
 TODO:
 -----
 - [ ] Vim docs
+- [ ] More mappings
