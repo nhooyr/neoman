@@ -37,8 +37,7 @@ Neoman printf(3)
 
 Neoman without any arguments will use `<cword>` as the page.
 
-By default if a neoman window is already open, it will be switched to, if you would like it to open in the current window, use the bang.  
-Or set `g:neoman_current_window` in which case the behaviors are swapped.
+By default neoman will attempt to switch to the currently open neoman window, if you want to force the current window, use the bang. Or set `g:neoman_current_window` in which case the behaviors are swapped.
 
 ## Mappings
 `<c-]>` or `K` to jump to a manpage under the cursor.  
