@@ -149,7 +149,7 @@ function! neoman#Complete(ArgLead, CmdLine, CursorPos) abort
   " for d in l:mandirs
   "   let l:candidates += glob(d . "**/" . l:page . "*." . l:sect . '*', 0, 1)
   " endfor
-  let l:mandirs_list = split($MANPATH, ':')
+  let l:mandirs_list = split(system("/usr/bin/man -w"), ':')
   let l:mandirs = join(l:mandirs_list, ',')
   let l:candidates = globpath(l:mandirs, "**/" . l:page . "*." . l:sect . '*', 0, 1)
   for i in range(len(l:candidates))
