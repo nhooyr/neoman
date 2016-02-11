@@ -35,14 +35,16 @@ Neoman 3 printf
 Neoman printf(3)
 ```
 
+Neoman without any arguments will use `<cword>` as the page.
+
 By default if a neoman window is already open, it will be switched to, if you would like it to open in the current window, use the bang.  
 Or set `g:neoman_current_window` in which case the behaviors are swapped.
 
 ## Mappings
-`<c-]>` on a manpage link to jump to the manpage.  
+`<c-]>` or `K` to jump to a manpage under the cursor.  
 `<c-t>` to jump back.
 
-You can also set the following in your `init.vim`/`.vimrc` and use `K` to jump to manpages instead.
+You can also set the following in your `init.vim`/`.vimrc` and use `K` to jump to manpages globally for the word under the cursor.
 
 ```vim
 set keywordprg=:Neoman
@@ -140,3 +142,4 @@ TODO:
 - [ ] Vim docs
 - [ ] More mappings
 - [ ] Maybe history?
+- [ ] Hijack `Man` mode
