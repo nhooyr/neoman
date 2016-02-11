@@ -73,7 +73,7 @@ function neoman#get_page(...) abort
 endfunction
 
 function neoman#pop_page() abort
-  if s:man_tag_depth > 0
+  if s:man_tag_depth > 1
     let s:man_tag_depth = s:man_tag_depth - 1
     exec "let s:man_tag_buf=s:man_tag_buf_".s:man_tag_depth
     exec "let s:man_tag_lin=s:man_tag_lin_".s:man_tag_depth

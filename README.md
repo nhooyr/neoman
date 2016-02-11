@@ -35,14 +35,18 @@ Neoman 3 printf
 Neoman printf(3)
 ```
 
-Inside a manpage, press `<c-]>` on a manpage link to jump to the manpage. Or you can set the following in your `init.vim`/`.vimrc` and use `K` instead.
+By default if a neoman window is already open, it will be switched to, if you would like it to open in the current window, use the bang.  
+Or set `g:neoman_current_window` in which case the behaviors are swapped.
+
+## Mappings
+`<c-]>` on a manpage link to jump to the manpage.  
+`<c-t>` to jump back.
+
+You can also set the following in your `init.vim`/`.vimrc` and use `K` to jump to manpages instead.
 
 ```vim
 set keywordprg=:Neoman
 ```
-
-By default if a neoman window is already open, it will be switched to, if you would like it to open in the current window, use the bang.  
-Or set `g:neoman_current_window` in which case the behaviors are swapped.
 
 ### Splits
 Want to split/vsplit/tabe? Pretty simple.
@@ -135,3 +139,4 @@ TODO:
 -----
 - [ ] Vim docs
 - [ ] More mappings
+- [ ] Maybe history?
