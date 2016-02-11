@@ -142,4 +142,4 @@ TODO:
 - [ ] Vim docs
 - [ ] More mappings
 - [ ] Maybe history?
-- [ ] Hijack `Man` mode
+- [ ] Hijack `:Man` mode
