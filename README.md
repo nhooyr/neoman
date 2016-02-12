@@ -66,7 +66,7 @@ You will need [nvr](https://github.com/mhinz/neovim-remote) for the super cool n
 Add the following functions to your `.zshrc`/`.bashrc`
 
 ```zsh
-_nman() {
+function _nman {
 	if [[ "$@" == "" ]]; then
 		print "What manual page do you want?"
 		return
@@ -82,11 +82,11 @@ _nman() {
 		nvr --remote-send "<c-n>" -c $cmd
 	fi
 }
-nman() {
+function nman {
 	cmd="Neoman $*"
 	_nman "$@"
 }
-nman!() {
+function nman! {
 	cmd="Neoman! $*"
 	_nman "$@"
 }
@@ -94,7 +94,7 @@ nman!() {
 
 #### Vim
 ```zsh
-_nman() {
+function _nman {
 	if [[ "$@" == "" ]]; then
 		print "What manual page do you want?"
 		return
@@ -106,11 +106,11 @@ _nman() {
 	fi
 	vim -c $cmd
 }
-nman() {
+function nman {
 	cmd="Neoman $*"
 	_nman "$@"
 }
-nman!() {
+function nman! {
 	cmd="Neoman! $*"
 	_nman "$@"
 }
