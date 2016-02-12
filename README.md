@@ -6,9 +6,7 @@ Read manpages faster than superman!
 
 ## Features
 - Manpage autocompletion
-- Open manpages whose section is not just a number
-- Much more intuitive behavior than the builtin manpage plugin
-- Open in a split/vsplit/tabe
+- Open in a split/vsplit/tabe or current window
 - Open from inside a neovim terminal!
 - Jump to manpages in specific sections through the manpage links
 
