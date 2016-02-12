@@ -27,7 +27,6 @@ setlocal nobuflisted
 setlocal nomodified
 setlocal readonly
 setlocal nomodifiable
-setlocal number
 setlocal noexpandtab
 setlocal tabstop=8
 setlocal softtabstop=8
