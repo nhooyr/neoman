@@ -37,7 +37,7 @@ Neoman printf(3)
 
 Neoman without any arguments will use `<cword>` as the page.
 
-See `g:neoman_current_window` under settings for an explaination of the bang.
+See `g:neoman_current_window` under settings for an explanation of the bang.
 
 ## Mappings
 `<c-]>` or `K` to jump to a manpage under the cursor.  
@@ -137,7 +137,7 @@ I've really only tested this with zsh, if you have any problems with bash and fi
 `g:neoman_current_window`
 If set, open the manpage in the current window, else attempt to find the currently open neoman window and use that. You can also use the bang on `:Neoman` to alternate between the two behaviors.
 
-By default it is not set
+By default, it is not set
 
 TODO:
 -----
