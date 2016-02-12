@@ -37,7 +37,7 @@ Neoman printf(3)
 
 Neoman without any arguments will use `<cword>` as the page.
 
-By default neoman will attempt to switch to the currently open neoman window, if you want to force the current window, use the bang. Or set `g:neoman_current_window` in which case the behaviors are swapped.
+See `g:neoman_current_window` under settings for an explaination of the bang.
 
 ## Mappings
 `<c-]>` or `K` to jump to a manpage under the cursor.  
@@ -134,7 +134,10 @@ Use `nman`/`nman!` to open the manpages. `nman!` works the same way as `:Neovim!
 I've really only tested this with zsh, if you have any problems with bash and fix them please send a PR!
 
 ### Settings
-Only setting is `g:neoman_current_window`. This is explained above in the [command](#command) section.
+`g:neoman_current_window`
+If set, open the manpage in the current window, else attempt to find the currently open neoman window and use that. You can also use the bang on `:Neoman` to alternate between the two behaviors.
+
+By default it is not set
 
 TODO:
 -----
