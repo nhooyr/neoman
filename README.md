@@ -139,6 +139,10 @@ If set, open the manpage in the current window, else attempt to find the current
 By default, it is not set
 
 
+## Contributing
+
+I'm very open to new ideas, new features, anything really. Open up an issue, send me a PR/email.
+
 TODO:
 -----
 - [ ] Vim docs
