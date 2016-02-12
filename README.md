@@ -138,8 +138,8 @@ If set, open the manpage in the current window, else attempt to find the current
 
 By default, it is not set
 
+
 TODO:
 -----
 - [ ] Vim docs
 - [ ] More mappings
-- [ ] Hijack `:Man` mode
