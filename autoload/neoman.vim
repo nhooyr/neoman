@@ -91,8 +91,12 @@ endfunction
 " Expects a string like 'access' or 'access(2)'.
 function s:parse_page_and_section(sect, str) abort
   try
-    let page = substitute(a:str, '\*\?\([a-zA-Z_:0-9.]\+\).*', '\1', '')
-    let sect = substitute(a:str, '\*\?[a-zA-Z_:0-9.]\+(\([^()]*\)).*', '\1', '')
+    let page = substitute(a:str, '\*\?\([a-zA-Z_:.0-9-]\+\).*', '\1', '')
+    if page =~# '\.$'
+      let page = strpart(page, 0, len(page)-1)
+      return [page, a:sect]
+    endif
+    let sect = substitute(a:str, '\*\?[a-zA-Z_:.0-9-]\+(\([^()]*\)).*', '\1', '')
     if sect ==# page
       let sect = a:sect
     endif
