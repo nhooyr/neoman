@@ -9,6 +9,7 @@ Read manpages faster than superman!
 - Open in a split/vsplit/tabe or current window
 - Open from inside a neovim terminal!
 - Jump to manpages in specific sections through the manpage links
+- Proper parsing for modern manpages, e.g. sections are not just 1-8 anymore
 
 ## Install
 Any plugin manager should work fine.
