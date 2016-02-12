@@ -131,7 +131,7 @@ complete -o default -o nospace -F _man nman!
 
 Use `nman`/`nman!` to open the manpages. `nman!` works the same way as `:Neovim!`.
 
-I've really only tested this with zsh, if you have any problems with bash and fix them please send a PR!
+I've really only tested this with zsh, if you have any problems with bash, please open a issue!
 
 ### Settings
 `g:neoman_current_window`  
