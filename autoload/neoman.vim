@@ -34,7 +34,7 @@ function neoman#get_page(...) abort
   endif
 
   if empty(sect)
-    let sect = fnamemodify(substitute(system('/usr/bin/man -d ' . page), ".*\\\%(tbl\\\|cat\\\) '\\\(.*\\\)'.*", '\1', ''), ":e")
+    let sect = substitute(split(system('/usr/bin/man ' . page), '\n')[0], '^[a-zA-Z0-9_:.-]\+(\([^()]*\)).*', '\1', '')
   endif
 
   exec 'let s:man_tag_buf_'.s:man_tag_depth.' = '.bufnr('%')
