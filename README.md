@@ -134,7 +134,7 @@ Use `nman`/`nman!` to open the manpages. `nman!` works the same way as `:Neovim!
 I've really only tested this with zsh, if you have any problems with bash and fix them please send a PR!
 
 ### Settings
-`g:neoman_current_window`
+`g:neoman_current_window`  
 If set, open the manpage in the current window, else attempt to find the currently open neoman window and use that. You can also use the bang on `:Neoman` to alternate between the two behaviors.
 
 By default, it is not set
