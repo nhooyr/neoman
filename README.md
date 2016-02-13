@@ -146,6 +146,7 @@ I'm very open to new ideas, new features, anything really ;) . Open up an issue,
 
 TODO:
 -----
+- [ ] Improve behavior of jumps (invalid jumps?)
 - [ ] Use matchstr instead of substitute
 - [ ] Vim docs
 - [ ] More mappings
