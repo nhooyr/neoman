@@ -17,6 +17,7 @@
 let s:man_tag_depth = 0
 let s:man_sect_arg = ''
 let s:man_find_arg = '-w'
+let s:man_cmd_line = '/usr/bin/man 2>/dev/null'
 
 try
   if !has('win32') && $OSTYPE !~? 'cygwin\|linux' && system('uname -s') =~? 'SunOS' && system('uname -r') =~? '^5'
@@ -50,7 +51,7 @@ function neoman#get_page(...) abort
   endif
 
   if empty(sect)
-    let sect = substitute(split(system('/usr/bin/man ' . page), '\n')[0], '^[a-zA-Z0-9_:.-]\+(\([^()]*\)).*', '\1', '')
+    let sect = substitute(split(system(s:man_cmd_line.' '.page), '\n')[0], '^[a-zA-Z0-9_:.-]\+(\([^()]*\)).*', '\1', '')
   endif
 
   exec 'let s:man_tag_buf_'.s:man_tag_depth.' = '.bufnr('%')
@@ -81,7 +82,7 @@ function neoman#get_page(...) abort
   setlocal modifiable
   silent keepjumps norm! 1G"_dG
   let $MANWIDTH = winwidth(0)
-  silent exec 'r!/usr/bin/man '.s:cmd(sect, page).' | col -b'
+  silent exec 'r!'.s:man_cmd_line.' '.s:cmd(sect, page).' | col -b'
   " Remove blank lines from top and bottom.
   while getline(1) =~ '^\s*$'
     silent keepjumps norm! gg"_dd
@@ -135,7 +136,7 @@ function s:cmd(sect, page) abort
 endfunction
 
 function s:find_page(sect, page) abort
-  let where = system('/usr/bin/man '.s:man_find_arg.' '.s:cmd(a:sect, a:page))
+  let where = system(s:man_cmd_line.' '.s:man_find_arg.' '.s:cmd(a:sect, a:page))
   if where !~ "^/"
     if matchstr(where, " [^ ]*$") !~ "^ /"
       return 0
@@ -178,7 +179,7 @@ function! neoman#Complete(ArgLead, CmdLine, CursorPos) abort
   " for d in l:mandirs
   "   let l:candidates += glob(d . "**/" . l:page . "*." . l:sect . '*', 0, 1)
   " endfor
-  let l:mandirs_list = split(system("/usr/bin/man -w"), ':')
+  let l:mandirs_list = split(system(s:man_cmd_line.' -w'), ':')
   let l:mandirs = join(l:mandirs_list, ',')
   let l:candidates = globpath(l:mandirs, "**/" . l:page . "*." . l:sect . '*', 0, 1)
   for i in range(len(l:candidates))
