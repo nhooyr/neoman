@@ -53,7 +53,7 @@ function neoman#get_page(...) abort
 
   if empty(sect)
     let sect = fnamemodify(system(where), ":t")
-    if fnamemodify(sect, ":e") ==# "gz"
+    if fnamemodify(sect, ":e") ==# "gz\n"
       let sect = fnamemodify(sect, ":r")
     endif
     let sect = substitute(sect, '^[a-zA-Z_:.0-9-]\+\.\(\w\+\).*', '\1', '')
