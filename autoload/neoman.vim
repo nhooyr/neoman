@@ -86,7 +86,7 @@ function neoman#get_page(...) abort
   silent exec 'edit man://'.page.'('.sect.')'
   setlocal modifiable
   silent keepjumps norm! 1G"_dG
-  let $MANWIDTH = winwidth(0)
+  let $MANWIDTH = winwidth(0)-1
   silent exec 'r!'.s:man_cmd.' '.s:cmd(sect, page).' | col -b'
   " Remove blank lines from top and bottom.
   while getline(1) =~ '^\s*$'
