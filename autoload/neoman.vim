@@ -36,7 +36,7 @@ function neoman#get_page(...) abort
     let [page, sect] = [expand('<cword>'), '']
     if empty(page)
       redraws! | echon "neoman: " | echohl ErrorMsg | echon "no identifier under cursor" | echohl None
-      return 1
+      return
     endif
   elseif a:0 == 2
     let [page, sect] = [a:2, '']
@@ -48,7 +48,7 @@ function neoman#get_page(...) abort
   let [ok, where] = s:find_page(sect, page)
   if !ok
     redraws! | echon "neoman: " | echohl ErrorMsg | echon "no manual entry for " . page | echohl None
-    return 1
+    return
   endif
 
   if empty(sect)
@@ -92,7 +92,7 @@ function neoman#get_page(...) abort
     silent keepjumps norm! G"_dd
   endwhile
   setlocal filetype=neoman
-  return 0
+  return
 endfunction
 
 function neoman#pop_page() abort
@@ -180,7 +180,7 @@ function! neoman#Complete(ArgLead, CmdLine, CursorPos) abort
   " for d in l:mandirs
   "   let l:candidates += glob(d . "**/" . l:page . "*." . l:sect . '*', 0, 1)
   " endfor
-  let l:mandirs_list = split(system(s:man_cmd.' -w'), ':')
+  let l:mandirs_list = split(system(s:man_cmd.' '.s:man_find_arg), ':')
   let l:mandirs = join(l:mandirs_list, ',')
   let l:candidates = globpath(l:mandirs, "**/" . l:page . "*." . l:sect . '*', 0, 1)
   for i in range(len(l:candidates))
