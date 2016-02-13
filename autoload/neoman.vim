@@ -83,7 +83,12 @@ function neoman#get_page(...) abort
     endif
   endif
 
-  silent exec 'edit man://'.page.'('.sect.')'
+  let bufname = "man://".page.'('.sect.')'
+  if expand("%") ==# bufname
+    silent norm! gg
+    return
+  endif
+  silent exec 'edit '.bufname
   setlocal modifiable
   silent keepjumps norm! 1G"_dG
   let $MANWIDTH = winwidth(0)-1
