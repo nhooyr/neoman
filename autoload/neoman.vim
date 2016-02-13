@@ -45,13 +45,14 @@ function neoman#get_page(...) abort
   endif
 
   let [page, sect] = s:parse_page_and_section(sect, page)
-  if !s:find_page(sect, page)
+  let [ok, where] = s:find_page(sect, page)
+  if !ok
     redraws! | echon "neoman: " | echohl ErrorMsg | echon "no manual entry for " . page | echohl None
     return 1
   endif
 
   if empty(sect)
-    let sect = substitute(fnamemodify(system(s:man_cmd . ' ' . s:man_find_arg . ' ' . page), ":t"), '^[a-zA-Z_:.0-9-]\+\.\(\w\+\)\%(\.gz\)\?.*', '\1', '')
+    let sect = substitute(fnamemodify(system(where), ":t"), '^[a-zA-Z_:.0-9-]\+\.\(\w\+\)\%(\.gz\)\?.*', '\1', '')
   endif
 
   exec 'let s:man_tag_buf_'.s:man_tag_depth.' = '.bufnr('%')
@@ -139,10 +140,10 @@ function s:find_page(sect, page) abort
   let where = system(s:man_cmd.' '.s:man_find_arg.' '.s:cmd(a:sect, a:page))
   if where !~ "^/"
     if matchstr(where, " [^ ]*$") !~ "^ /"
-      return 0
+      return [0, '']
     endif
   endif
-  return 1
+  return [1, where]
 endfunction
 
 function! neoman#Complete(ArgLead, CmdLine, CursorPos) abort
