@@ -17,7 +17,7 @@
 let s:man_tag_depth = 0
 let s:man_sect_arg = ''
 let s:man_find_arg = '-w'
-let s:man_cmd_line = '/usr/bin/man 2>/dev/null'
+let s:man_cmd = 'man 2>/dev/null'
 
 try
   if !has('win32') && $OSTYPE !~? 'cygwin\|linux' && system('uname -s') =~? 'SunOS' && system('uname -r') =~? '^5'
@@ -36,7 +36,7 @@ function neoman#get_page(...) abort
     let [page, sect] = [expand('<cword>'), '']
     if empty(page)
       redraws! | echon "neoman: " | echohl ErrorMsg | echon "no identifier under cursor" | echohl None
-      return 1
+      return
     endif
   elseif a:0 == 2
     let [page, sect] = [a:2, '']
@@ -45,13 +45,18 @@ function neoman#get_page(...) abort
   endif
 
   let [page, sect] = s:parse_page_and_section(sect, page)
-  if !s:find_page(sect, page)
+  let [ok, where] = s:find_page(sect, page)
+  if !ok
     redraws! | echon "neoman: " | echohl ErrorMsg | echon "no manual entry for " . page | echohl None
-    return 1
+    return
   endif
 
   if empty(sect)
-    let sect = substitute(split(system(s:man_cmd_line.' '.page), '\n')[0], '^[a-zA-Z0-9_:.-]\+(\([^()]*\)).*', '\1', '')
+    let sect = fnamemodify(system(where), ":t")
+    if fnamemodify(sect, ":e") ==# "gz\n"
+      let sect = fnamemodify(sect, ":r")
+    endif
+    let sect = substitute(sect, '^[a-zA-Z_:.0-9-]\+\.\(\w\+\).*', '\1', '')
   endif
 
   exec 'let s:man_tag_buf_'.s:man_tag_depth.' = '.bufnr('%')
@@ -78,11 +83,16 @@ function neoman#get_page(...) abort
     endif
   endif
 
-  silent exec 'edit man://'.page.(empty(sect)?'':'('.sect.')')
+  let bufname = "man://".page.'('.sect.')'
+  if expand("%") ==# bufname
+    silent norm! gg
+    return
+  endif
+  silent exec 'edit '.bufname
   setlocal modifiable
   silent keepjumps norm! 1G"_dG
-  let $MANWIDTH = winwidth(0)
-  silent exec 'r!'.s:man_cmd_line.' '.s:cmd(sect, page).' | col -b'
+  let $MANWIDTH = winwidth(0)-1
+  silent exec 'r!'.s:man_cmd.' '.s:cmd(sect, page).' | col -b'
   " Remove blank lines from top and bottom.
   while getline(1) =~ '^\s*$'
     silent keepjumps norm! gg"_dd
@@ -91,7 +101,7 @@ function neoman#get_page(...) abort
     silent keepjumps norm! G"_dd
   endwhile
   setlocal filetype=neoman
-  return 0
+  return
 endfunction
 
 function neoman#pop_page() abort
@@ -136,13 +146,13 @@ function s:cmd(sect, page) abort
 endfunction
 
 function s:find_page(sect, page) abort
-  let where = system(s:man_cmd_line.' '.s:man_find_arg.' '.s:cmd(a:sect, a:page))
+  let where = system(s:man_cmd.' '.s:man_find_arg.' '.s:cmd(a:sect, a:page))
   if where !~ "^/"
     if matchstr(where, " [^ ]*$") !~ "^ /"
-      return 0
+      return [0, '']
     endif
   endif
-  return 1
+  return [1, where]
 endfunction
 
 function! neoman#Complete(ArgLead, CmdLine, CursorPos) abort
@@ -179,7 +189,7 @@ function! neoman#Complete(ArgLead, CmdLine, CursorPos) abort
   " for d in l:mandirs
   "   let l:candidates += glob(d . "**/" . l:page . "*." . l:sect . '*', 0, 1)
   " endfor
-  let l:mandirs_list = split(system(s:man_cmd_line.' -w'), ':')
+  let l:mandirs_list = split(system(s:man_cmd.' '.s:man_find_arg), ':')
   let l:mandirs = join(l:mandirs_list, ',')
   let l:candidates = globpath(l:mandirs, "**/" . l:page . "*." . l:sect . '*', 0, 1)
   for i in range(len(l:candidates))
