@@ -40,7 +40,7 @@ See `g:neoman_current_window` under settings for an explanation of the bang.
 
 ## Mappings
 `<c-]>` or `K` to jump to a manpage under the cursor.  
-`<c-t>` to jump back.
+`<c-t>` to jump back to the previous man page.
 'q' to quit
 
 You can also set the following in your `init.vim`/`.vimrc` and use `K` to jump to manpages globally for the word under the cursor.
@@ -142,7 +142,7 @@ By default, it is not set
 
 ## Contributing
 
-I'm very open to new ideas, new features, anything really. Open up an issue, send me a PR/email.
+I'm very open to new ideas, new features, anything really ;) . Open up an issue, send me a PR, or email.
 
 TODO:
 -----
