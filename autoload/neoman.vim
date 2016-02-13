@@ -52,7 +52,11 @@ function neoman#get_page(...) abort
   endif
 
   if empty(sect)
-    let sect = substitute(fnamemodify(system(where), ":t"), '^[a-zA-Z_:.0-9-]\+\.\(\w\+\)\%(\.gz\)\?.*', '\1', '')
+    let sect = fnamemodify(system(where), ":t")
+    if fnamemodify(sect, ":e") ==# "gz"
+      let sect = fnamemodify(sect, ":r")
+    endif
+    let sect = substitute(sect, '^[a-zA-Z_:.0-9-]\+\.\(\w\+\).*', '\1', '')
   endif
 
   exec 'let s:man_tag_buf_'.s:man_tag_depth.' = '.bufnr('%')
