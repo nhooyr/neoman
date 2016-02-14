@@ -4,6 +4,9 @@ Read manpages faster than superman!
 
 ![neoman in action](https://media.giphy.com/media/xT0BKrEeXPeKVMgb84/giphy.gif)
 
+##ATTENTION
+I just renamed the command to `:Nman`, if you were using it before, just edit any mappings or the functions in your `.zshrc`/`.bashrc`.
+
 ## Features
 - Manpage autocompletion
 - Open in a split/vsplit/tabe or current window
@@ -23,18 +26,18 @@ Plug 'nhooyr/neoman.vim' "vim-plug
 The command is as follows:
 
 ```vim
-Neoman[!] [{sect}] {page}[({sect})]
+Nman[!] [{sect}] {page}[({sect})]
 ```
 
 Several ways to use it, probably easier to explain with a few examples.
 
 ```vim
-Neoman printf
-Neoman 3 printf
-Neoman printf(3)
+Nman printf
+Nman 3 printf
+Nman printf(3)
 ```
 
-Neoman without any arguments will use `<cword>` as the page.
+Nman without any arguments will use `<cword>` as the page.
 
 See `g:neoman_current_window` under settings for an explanation of the bang.
 
@@ -46,14 +49,14 @@ See `g:neoman_current_window` under settings for an explanation of the bang.
 You can also set the following in your `init.vim`/`.vimrc` and use `K` to jump to manpages globally for the word under the cursor.
 
 ```vim
-set keywordprg=:Neoman
+set keywordprg=:Nman
 ```
 
 ### Splits
 Want to split/vsplit/tabe? Pretty simple.
 
 ```vim
-:vsplit | Neoman! 3 printf
+:vsplit | Nman! 3 printf
 ```
 
 You can very easily make that a custom command or mapping.
@@ -83,11 +86,11 @@ function _nman {
 	fi
 }
 function nman {
-	cmd="Neoman $*"
+	cmd="Nman $*"
 	_nman "$@"
 }
 function nman! {
-	cmd="Neoman! $*"
+	cmd="Nman! $*"
 	_nman "$@"
 }
 ```
@@ -107,11 +110,11 @@ function _nman {
 	vim -c $cmd
 }
 function nman {
-	cmd="Neoman $*"
+	cmd="Nman $*"
 	_nman "$@"
 }
 function nman! {
-	cmd="Neoman! $*"
+	cmd="Nman! $*"
 	_nman "$@"
 }
 ```
@@ -135,7 +138,7 @@ I've really only tested this with zsh, if you have any problems with bash, pleas
 
 ### Settings
 `g:neoman_current_window`  
-If set, open the manpage in the current window, else attempt to find the currently open neoman window and use that. You can also use the bang on `:Neoman` to alternate between the two behaviors.
+If set, open the manpage in the current window, else attempt to find the currently open neoman window and use that. You can also use the bang on `:Nman` to alternate between the two behaviors.
 
 By default, it is not set
 
