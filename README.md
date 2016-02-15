@@ -102,7 +102,7 @@ function nman! {
 ```
 
 #### Vim
-```
+```zsh
 function nman {
 	if [[ -z $* ]]; then
 		echo "What manual page do you want?"
