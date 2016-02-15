@@ -64,58 +64,62 @@ You can very easily make that a custom command or mapping.
 ### Command line integration
 
 #### Neovim
-You will need [nvr](https://github.com/mhinz/neovim-remote) for the super cool neovim terminal integration.
+You will need [nvr](https://github.com/mhinz/neovim-remote) for the super cool neovim terminal integration. If you do not want it, just use the vim version and obviously change the command to `nvim`.
 
 Add the following functions to your `.zshrc`/`.bashrc`
 
 ```zsh
 function _nman {
-	if [[ "$@" == "" ]]; then
-		print "What manual page do you want?"
+	local l=$#
+	local page=(${@:1:$l-1})
+	if [[ -z "$page" ]]; then
+		echo "What manual page do you want?"
 		return
 	fi
-	/usr/bin/man "$@" > /dev/null 2>&1
-	if [[ "$?" != "0" ]]; then
-		print "No manual entry for $*"
+	local tmp=$IFS
+	IFS=$'\n' out=($(command man -w ${page[@]} 2>&1))
+	local code=$?
+	IFS=$tmp
+	if [[ ${#out[@]} > 1 ]]; then
+		echo "Too many manpages"
+		return
+	elif [[ $code != 0 ]]; then
+		echo "No manual entry for ${page[*]}"
 		return
 	fi
 	if [[ -z $NVIM_LISTEN_ADDRESS ]]; then
-		/usr/bin/env nvim -c $cmd
+		command nvim -c "${@: -1} ${page[*]}"
 	else
-		nvr --remote-send "<c-n>" -c $cmd
+		nvr --remote-send "<c-n>" -c "${@: -1} ${page[*]}"
 	fi
 }
 function nman {
-	cmd="Nman $*"
-	_nman "$@"
+	_nman "$@" 'Nman'
 }
 function nman! {
-	cmd="Nman! $*"
-	_nman "$@"
+	_nman "$@" 'Nman!'
 }
 ```
 
 #### Vim
-```zsh
-function _nman {
-	if [[ "$@" == "" ]]; then
-		print "What manual page do you want?"
-		return
-	fi
-	/usr/bin/man "$@" > /dev/null 2>&1
-	if [[ "$?" != "0" ]]; then
-		print "No manual entry for $*"
-		return
-	fi
-	vim -c $cmd
-}
+```
 function nman {
-	cmd="Nman $*"
-	_nman "$@"
-}
-function nman! {
-	cmd="Nman! $*"
-	_nman "$@"
+	if [[ -z $* ]]; then
+		echo "What manual page do you want?"
+		return
+	fi
+	local tmp=$IFS
+	IFS=$'\n' out=($(command man -w $* 2>&1))
+	local code=$?
+	IFS=$tmp
+	if [[ ${#out[@]} > 1 ]]; then
+		echo "Too many manpages"
+		return
+	elif [[ $code != 0 ]]; then
+		echo "No manual entry for $*"
+		return
+	fi
+	vim -c "Nman $*"
 }
 ```
 
@@ -123,12 +127,16 @@ function nman! {
 ##### zsh
 ```zsh
 compdef nman="man"
+
+#if using the neovim version, add this as well
 compdef nman!="man"
 ```
 
 ##### bash
 ```bash
 complete -o default -o nospace -F _man nman
+
+#if using the neovim version, add this as well
 complete -o default -o nospace -F _man nman!
 ```
 
