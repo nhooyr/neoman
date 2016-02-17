@@ -29,8 +29,8 @@ Plug 'nhooyr/neoman.vim' "vim-plug
 The command is as follows:
 
 ```vim
-Nman[!] [{sect}] {page}
-Nman[!] {page}[({sect})]
+Nman[!] [sect] page
+Nman[!] page[(sect)]
 ```
 
 Several ways to use it, probably easier to explain with a few examples.
@@ -235,7 +235,6 @@ By default this is set.
 If set, no mappings are made in neoman buffers. By default it is not set.
 
 ## Contributing
-
 I'm very open to new ideas, new features, anything really ;) . Open up an issue, send me a PR, or email.
 
 TODO:
