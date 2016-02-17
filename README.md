@@ -246,4 +246,3 @@ TODO:
 -----
 - [ ] Improve behavior of jumps (invalid jumps?)
 - [ ] Vim docs
-- [ ] Fix behavior of `g:find_neoman_window` with tabs
