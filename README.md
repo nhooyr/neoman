@@ -162,7 +162,7 @@ function nman {
 or the following to your config.fish
 
 ```fish
-function _nman
+function nman
 	if [ -z "$argv" ]
 		echo "What manual page do you want?"
 		return
