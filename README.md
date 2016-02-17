@@ -150,7 +150,7 @@ function nman!
 end
 ```
 
-#####Custom commands
+#####Splitting from neovim terminals
 You can add shell commands for vertical/horizontal spltting in neovim very easily.  
 Duplicate the two small functions, rename them to say `'vnman'` and `'vnman!'` (vertical split a manpage from a neovim terminal) and change the string arguments of `_nman` to `'Vnman'` and `'Vnman!''`.  
 Don't forget to add the autocomplete aliases from below and rename them.
