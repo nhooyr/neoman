@@ -150,6 +150,9 @@ function nman!
 end
 ```
 
+#####Custom commands
+You can add shell commands for vertical/horizontal spltting in neovim very easily. Duplicate the two small functions, rename them to say `vnman` and `vnman!` and change the command to `Vnman` and `Vnman!`. Don't forget to add the autocomplete aliases from below and rename them.
+
 #### Vim
 
 #####zsh/bash
