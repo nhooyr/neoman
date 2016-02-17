@@ -82,7 +82,7 @@ Note the trailing space after `:Vnman `
 #### Neovim
 You will need [nvr](https://github.com/mhinz/neovim-remote) for the super cool neovim terminal integration. If you do not want it, just use the vim version and obviously change the command to `nvim`.
 
-Add the following function to your `.zshrc`/`.bashrc`
+#####zsh/bash
 
 ```zsh
 function _nman {
@@ -117,7 +117,7 @@ function nman! {
 }
 ```
 
-or the following to your config.fish
+#####fish
 
 ```fish
 function _nman
@@ -152,7 +152,7 @@ end
 
 #### Vim
 
-Add the following functions to your `.zshrc`/`.bashrc`
+#####zsh/bash
 
 ```zsh
 function nman {
@@ -175,7 +175,7 @@ function nman {
 }
 ```
 
-or the following to your config.fish
+#####fish
 
 ```fish
 function nman
