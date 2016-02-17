@@ -82,7 +82,7 @@ Note the trailing space at `:Vnman `
 #### Neovim
 You will need [nvr](https://github.com/mhinz/neovim-remote) for the super cool neovim terminal integration. If you do not want it, just use the vim version and obviously change the command to `nvim`.
 
-Add the following functions to your `.zshrc`/`.bashrc`
+Add the following function to your `.zshrc`/`.bashrc`
 
 ```zsh
 function _nman {
