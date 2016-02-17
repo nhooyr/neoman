@@ -13,6 +13,7 @@ I just renamed the command to `:Nman`, if you were using it before, just edit an
 - Open from inside a neovim terminal!
 - Jump to manpages in specific sections through the manpage links
 - Aware of modern manpages, e.g. sections are not just 1-8 anymore
+- FISH SUPPORT
 
 ## Install
 Any plugin manager should work fine.
