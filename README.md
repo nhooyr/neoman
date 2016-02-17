@@ -76,7 +76,7 @@ Or perhaps you want to give the name of the manpage?
 nnoremap <leader>mv :Vnman 
 ```
 
-Note the trailing space at `:Vnman `.
+Note the trailing space at `:Vnman `
 
 ### Command line integration
 #### Neovim
