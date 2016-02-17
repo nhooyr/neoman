@@ -36,9 +36,9 @@ Nman[!] {page}[({sect})]
 Several ways to use it, probably easier to explain with a few examples.
 
 ```vim
-Nman printf
-Nman 3 printf
-Nman printf(3)
+:Nman printf
+:Nman 3 printf
+:Nman printf(3)
 ```
 
 Nman without any arguments will use `<cword>` as the page.
