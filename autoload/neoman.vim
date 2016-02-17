@@ -28,23 +28,25 @@ catch /E145:/
   " Ignore the error in restricted mode
 endtry
 
-function neoman#get_page(...) abort
-  if a:0 > 3
+
+" a:args contains the section and the page
+function neoman#get_page(bang, editcmd, args) abort
+  if len(a:args) > 2
     redraws! | echon "neoman: " | echohl ErrorMsg | echon "too many arguments" | echohl None
     return
-  elseif a:0 == 1
-    let [page, sect] = [expand('<cword>'), '']
+  elseif empty(a:args)
+    let [sect, page] = ['', expand('<cword>')]
     if empty(page)
       redraws! | echon "neoman: " | echohl ErrorMsg | echon "no identifier under cursor" | echohl None
       return
     endif
-  elseif a:0 == 2
-    let [page, sect] = [a:2, '']
-  elseif a:0 == 3
-    let [page, sect] = [a:3, a:2]
+  elseif len(a:args) == 1
+    let [sect, page] = ['', a:args[0]]
+  elseif len(a:args) == 2
+    let [sect, page] = a:args
   endif
 
-  let [page, sect] = s:parse_page_and_section(sect, page)
+  let [sect, page] = s:parse_page_and_section(sect, page)
   let [ok, where] = s:find_page(sect, page)
   if !ok
     redraws! | echon "neoman: " | echohl ErrorMsg | echon "no manual entry for " . page | echohl None
@@ -64,7 +66,8 @@ function neoman#get_page(...) abort
   exec 'let s:man_tag_col_'.s:man_tag_depth.' = '.col('.')
   let s:man_tag_depth = s:man_tag_depth + 1
 
-  if g:neoman_current_window == a:1
+  let editcmd = a:editcmd
+  if g:find_neoman_window == !a:bang
     if &filetype !=# 'neoman'
       let thiswin = winnr()
       wincmd b
@@ -72,6 +75,7 @@ function neoman#get_page(...) abort
         exe "norm! " . thiswin . "<C-W>w"
         while 1
           if &filetype == 'neoman'
+            let editcmd = "edit"
             break
           endif
           wincmd w
@@ -83,7 +87,7 @@ function neoman#get_page(...) abort
     endif
   endif
 
-  silent exec 'edit man://'.page.'('.sect.')'
+  silent exec editcmd . ' man://'.page.'('.sect.')'
   setlocal modifiable
   silent keepjumps norm! 1G"_dG
   let $MANWIDTH = winwidth(0)-1
@@ -130,7 +134,7 @@ function s:parse_page_and_section(sect, str) abort
   catch
     redraws! | echon "neoman: " | echohl ErrorMsg | echon "failed to parse ".a:str.'"' | echohl None
   endtry
-  return [page, sect]
+  return [sect, page]
 endfunction
 
 function s:cmd(sect, page) abort

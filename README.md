@@ -4,8 +4,10 @@ Read manpages faster than superman!
 
 ![neoman in action](https://media.giphy.com/media/xT0BKrEeXPeKVMgb84/giphy.gif)
 
-##ATTENTION
+## ATTENTION
 I just renamed the command to `:Nman`, if you were using it before, just edit any mappings or the functions in your `.zshrc`/`.bashrc`.
+
+I've also changed `g:neoman_current_window` to `g:find_neoman_window`.
 
 ## Features
 - Manpage autocompletion
@@ -13,7 +15,7 @@ I just renamed the command to `:Nman`, if you were using it before, just edit an
 - Open from inside a neovim terminal!
 - Jump to manpages in specific sections through the manpage links
 - Aware of modern manpages, e.g. sections are not just 1-8 anymore
-- FISH SUPPORT
+- Fish Support
 
 ## Install
 Any plugin manager should work fine.
@@ -27,7 +29,8 @@ Plug 'nhooyr/neoman.vim' "vim-plug
 The command is as follows:
 
 ```vim
-Nman[!] [{sect}] {page}[({sect})]
+Nman[!] [{sect}] {page}
+Nman[!] {page}[({sect})]
 ```
 
 Several ways to use it, probably easier to explain with a few examples.
@@ -40,11 +43,19 @@ Nman printf(3)
 
 Nman without any arguments will use `<cword>` as the page.
 
-See `g:neoman_current_window` under settings for an explanation of the bang.
+For splitting/tabs there are the following commands
 
-## Mappings
+```vim
+:Snman! 3 printf "horizontal split
+:Vnman! 3 printf "verical split
+:Tnman! 3 printf "in a new tab
+```
+
+See `g:find_neoman_window` under settings for an explanation of the bang.
+
+### Mappings
 `<c-]>` or `K` to jump to a manpage under the cursor.  
-`<c-t>` to jump back to the previous man page.
+`<c-t>` to jump back to the previous man page.  
 'q' to quit
 
 You can also set the following in your `init.vim`/`.vimrc` and use `K` to jump to manpages globally for the word under the cursor.
@@ -53,17 +64,21 @@ You can also set the following in your `init.vim`/`.vimrc` and use `K` to jump t
 set keywordprg=:Nman
 ```
 
-### Splits
-Want to split/vsplit/tabe? Pretty simple.
+Here is a custom mapping for a vertical split man page with the word under the cursor.
 
 ```vim
-:vsplit | Nman! 3 printf
+nnoremap <silent> <leader>mv :Vnman<CR>
 ```
 
-You can very easily make that a custom command or mapping.
+Or perhaps you want to give the name of the manpage?
+
+```vim
+nnoremap <leader>mv :Vnman 
+```
+
+Note the trailing space at `:Vnman `
 
 ### Command line integration
-
 #### Neovim
 You will need [nvr](https://github.com/mhinz/neovim-remote) for the super cool neovim terminal integration. If you do not want it, just use the vim version and obviously change the command to `nvim`.
 
@@ -212,11 +227,12 @@ Use `nman`/`nman!` to open the manpages. `nman!` works the same way as `:Nman!`.
 I've really only tested this with zsh, if you have any problems with `bash`/`fish`, please open a issue!
 
 ### Settings
-`g:neoman_current_window`  
-If set, open the manpage in the current window, else attempt to find the currently open neoman window and use that. You can also use the bang on `:Nman` to alternate between the two behaviors.
+`g:find_neoman_window`  
+If this option is set, neoman will first attempt to find the current neoman window before opening a new one. The bang on `:Nman` will alternate on this behavior. So if this option is set, the bang will make it act like as if it is not set, and vice versa.  
+By default this is set.
 
-By default, it is not set
-
+`g:no_neoman_maps`  
+If set, no mappings are made in neoman buffers. By default it is not set.
 
 ## Contributing
 
@@ -225,6 +241,5 @@ I'm very open to new ideas, new features, anything really ;) . Open up an issue,
 TODO:
 -----
 - [ ] Improve behavior of jumps (invalid jumps?)
-- [ ] Use matchstr instead of substitute
 - [ ] Vim docs
-- [ ] More mappings
+- [ ] Fix behavior of `g:find_neoman_window` with tabs
