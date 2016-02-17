@@ -115,6 +115,24 @@ function nman {
 function nman! {
 	_nman "$@" 'Nman!'
 }
+function vnman {
+	_nman "$@" 'Vnman'
+}
+function vnman! {
+	_nman "$@" 'Vnman!'
+}
+function snman {
+	_nman "$@" 'Snman'
+}
+function snman! {
+	_nman "$@" 'Snman!'
+}
+function tnman {
+	_nman "$@" 'Tnman'
+}
+function tnman! {
+	_nman "$@" 'Tnman!'
+}
 ```
 
 #####fish
@@ -147,6 +165,24 @@ function nman
 end
 function nman!
 	_nman "$argv" 'Nman!'
+end
+function vnman
+	_nman "$argv" 'Vnman'
+end
+function vnman!
+	_nman "$argv" 'Vnman!'
+end
+function snman
+	_nman "$argv" 'Snman'
+end
+function snman!
+	_nman "$argv" 'Snman!'
+end
+function tnman
+	_nman "$argv" 'Tnman'
+end
+function tnman!
+	_nman "$argv" 'Tnman!'
 end
 ```
 
