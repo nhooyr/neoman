@@ -58,11 +58,13 @@ See `g:find_neoman_window` under settings for an explanation of the bang.
 `<c-t>` to jump back to the previous man page.  
 'q' to quit
 
-You can also set the following in your `init.vim`/`.vimrc` and use `K` to jump to manpages globally for the word under the cursor.
+You can also set the following in your `init.vim`/`.vimrc` and use `K` to jump to manpages globally for the word under the cursor. 
 
 ```vim
 set keywordprg=:Nman
 ```
+
+This option only works with neovim. You can just define a global mapping to do the same in vim.
 
 Here is a custom mapping for a vertical split man page with the word under the cursor.
 
