@@ -15,7 +15,7 @@ I've also changed `g:neoman_current_window` to `g:find_neoman_window`.
 - Open from inside a neovim terminal!
 - Jump to manpages in specific sections through the manpage links
 - Aware of modern manpages, e.g. sections are not just 1-8 anymore
-- Zsh/Bash/Fish Support
+- zsh/bash/fish Support
 
 ## Install
 Any plugin manager should work fine.
