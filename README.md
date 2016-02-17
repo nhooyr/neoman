@@ -101,7 +101,43 @@ function nman! {
 }
 ```
 
+or the following to your config.fish
+
+```fish
+function _nman
+	set page $argv[1..-2]
+	if [ -z "$page" ]
+		echo "What manual page do you want?"
+		return
+    end
+    set out (eval "command man -w $page 2>&1")
+    set code $status
+    set manpage_count (echo "$out" | grep -c '.*')
+    if [ $manpage_count -gt 1 ]
+	    echo "Too many manpages: $manpage_count"
+	    return
+    else if [ $code != 0 ]
+	    echo "No manual entry for $page"
+	    return
+    end
+    if [ -z $NVIM_LISTEN_ADDRESS ]
+	    command nvim -c "$argv[-1] $page"
+    else
+	    nvr --remote-send "<c-n>" -c "$argv[-1] $page"
+    end
+end
+function nman
+	_nman "$argv" 'Nman'
+end
+function nman!
+	_nman "$argv" 'Nman!'
+end
+```
+
 #### Vim
+
+Add the following functions to your `.zshrc`/`.bashrc`
+
 ```zsh
 function nman {
 	if [[ -z $* ]]; then
@@ -123,12 +159,34 @@ function nman {
 }
 ```
 
+or the following to your config.fish
+
+```fish
+function _nman
+	if [ -z "$argv" ]
+		echo "What manual page do you want?"
+		return
+    end
+    set out (eval "command man -w $argv 2>&1")
+    set code $status
+    set manpage_count (echo "$out" | grep -c '.*')
+    if [ $manpage_count -gt 1 ]
+	    echo "Too many manpages: $manpage_count"
+	    return
+    else if [ $code != 0 ]
+	    echo "No manual entry for $argv"
+	    return
+    end
+    vim -c "Nman $argv"
+end
+```
+
 #### Autocomplete
 ##### zsh
 ```zsh
 compdef nman="man"
 
-#if using the neovim version, add this as well
+#add this as well if you are using neovim
 compdef nman!="man"
 ```
 
@@ -136,13 +194,21 @@ compdef nman!="man"
 ```bash
 complete -o default -o nospace -F _man nman
 
-#if using the neovim version, add this as well
+#add this as well if you are using neovim
 complete -o default -o nospace -F _man nman!
 ```
 
-Use `nman`/`nman!` to open the manpages. `nman!` works the same way as `:Neovim!`.
+##### fish
+```fish
+complete --command nman --wraps=man
 
-I've really only tested this with zsh, if you have any problems with bash, please open a issue!
+#add this as well if you are using neovim
+complete --command nman! --wraps=man
+```
+
+Use `nman`/`nman!` to open the manpages. `nman!` works the same way as `:Nman!`.
+
+I've really only tested this with zsh, if you have any problems with `bash`/`fish`, please open a issue!
 
 ### Settings
 `g:neoman_current_window`  
