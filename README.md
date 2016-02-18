@@ -227,7 +227,7 @@ complete --command nman --wraps=man
 complete --command nman! --wraps=man
 ```
 
-Use `nman`/`nman!` to open the manpages. `nman!` works the same way as `:Nman!`, but obviously its only available for neovim, see `g:find_neoman_window`. You have to be connected remotely in order to find the neoman window, otherwise it doesn't matter.
+Use `nman`/`nman!` to open the manpages. `nman!` works the same way as `:Nman!`, but obviously its only available for neovim. You have to be connected remotely in order to find the neoman window, otherwise it doesn't matter, see `g:find_neoman_window`.
 
 I've really only tested this with zsh, if you have any problems with `bash`/`fish`, please open a issue!
 
