@@ -106,7 +106,7 @@ function _nman {
 	if [[ -z $NVIM_LISTEN_ADDRESS ]]; then
 		command nvim -c "${@: -1} ${page[*]}"
 	else
-		nvr --remote-send "<c-n>" -c "${@: -1} ${page[*]}"
+		nvr -c "${@: -1} ${page[*]}"
 	fi
 }
 function nman {
@@ -138,7 +138,7 @@ function _nman
     if [ -z $NVIM_LISTEN_ADDRESS ]
 	    command nvim -c "$argv[-1] $page"
     else
-	    nvr --remote-send "<c-n>" -c "$argv[-1] $page"
+	    nvr -c "$argv[-1] $page"
     end
 end
 function nman
