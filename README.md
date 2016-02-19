@@ -83,10 +83,10 @@ Note the trailing space after `:Vnman `
 You will need [nvr](https://github.com/mhinz/neovim-remote) for the super cool neovim terminal integration. If you do not want it, just use the vim version and obviously change the command to `nvim`.
 
 #####zsh/bash
-
 ```zsh
 function _nman {
 	local l=$#
+	local -a page
 	local page=(${@:1:$l-1})
 	if [[ -z "$page" ]]; then
 		echo "What manual page do you want?"
@@ -118,7 +118,6 @@ function nman! {
 ```
 
 #####fish
-
 ```fish
 function _nman
 	set page $argv[1..-2]
@@ -156,9 +155,7 @@ Duplicate the two small functions, rename them to `vnman` and `vnman!` and chang
 Don't forget to add the autocomplete aliases from below but obviously rename them to fit.
 
 #### Vim
-
 #####zsh/bash
-
 ```zsh
 function nman {
 	if [[ -z $* ]]; then
@@ -181,7 +178,6 @@ function nman {
 ```
 
 #####fish
-
 ```fish
 function nman
 	if [ -z "$argv" ]
