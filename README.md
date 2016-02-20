@@ -43,12 +43,12 @@ Several ways to use it, probably easier to explain with a few examples.
 
 Nman without any arguments will use `<cword>` as the page.
 
-For splitting/tabs there are the following commands
+For splitting/tabs there are the following commands (exact same syntax as `Nman`)
 
 ```vim
-:Snman! 3 printf "horizontal split
-:Vnman! 3 printf "verical split
-:Tnman! 3 printf "in a new tab
+:Snman 3 printf "horizontal split
+:Vnman 3 printf "verical split
+:Tnman 3 printf "in a new tab
 ```
 
 See `g:find_neoman_window` under settings for an explanation of the bang.
