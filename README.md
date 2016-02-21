@@ -228,11 +228,11 @@ Use `nman`/`nman!` to open the manpages. `nman!` works the same way as `:Nman!`,
 I've really only tested this with zsh, if you have any problems with `bash`/`fish`, please open a issue!
 
 ### Settings
-#### g:find\_neoman\_window
+##### g:find\_neoman\_window
 If this option is set, neoman will first attempt to find the current neoman window before opening a new one. The bang on `:Nman` will alternate on this behavior. So if this option is set, the bang will make it act like as if it is not set, and vice versa.  
 By default this is set.
 
-#### g:no\_neoman\_maps
+##### g:no\_neoman\_maps
 If set, no mappings are made in neoman buffers. By default it is not set.
 
 ## Contributing
