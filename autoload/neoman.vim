@@ -190,7 +190,7 @@ function! neoman#Complete(ArgLead, CmdLine, CursorPos) abort
   " endfor
   let l:mandirs_list = split(system(s:man_cmd.' '.s:man_find_arg), ':')
   let l:mandirs = join(l:mandirs_list, ',')
-  let l:candidates = globpath(l:mandirs, "**/" . l:page . "*." . l:sect . '*', 0, 1)
+  let l:candidates = globpath(l:mandirs, "*/" . l:page . "*." . l:sect . '*', 0, 1)
   for i in range(len(l:candidates))
     let l:candidates[l:i] = substitute((fnamemodify(l:candidates[l:i], ":t")),
           \ '\(.*\)\.\(.*\)', '\1(\2)', "")
