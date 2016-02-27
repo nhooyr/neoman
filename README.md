@@ -56,7 +56,7 @@ See `g:find_neoman_window` under settings for an explanation of the bang.
 ### Mappings
 `<c-]>` or `K` to jump to a manpage under the cursor.  
 `<c-t>` to jump back to the previous man page.  
-'q' to quit
+`q` to quit
 
 If you are using neovim, you can also set the following in your `init.vim`/`.vimrc` and use `K` to jump to manpages globally for the word under the cursor. 
 
