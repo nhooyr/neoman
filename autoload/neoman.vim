@@ -166,12 +166,6 @@ function! neoman#Complete(ArgLead, CmdLine, CursorPos) abort
     let page = args[2]
     let sect = args[1]
   endif
-  " TODO REPORT BUG WITH THIS CODE
-  " let mandirs = split($MANPATH, ':')
-  " let candidates = []
-  " for d in mandirs
-  "   let candidates += glob(d . "**/" . page . "*." . sect . '*', 0, 1)
-  " endfor
   let mandirs_list = split(system(s:man_cmd.' '.s:man_find_arg), ':')
   let mandirs = join(mandirs_list, ',')
   let candidates = globpath(mandirs, "*/" . page . "*." . sect . '*', 0, 1)
