@@ -2,6 +2,7 @@ let s:man_tag_depth = 0
 let s:man_sect_arg = ''
 let s:man_find_arg = '-w'
 let s:man_cmd = 'man 2>/dev/null'
+let s:man_extensions = '[glx]z\|bz2\|lzma\|Z'
 
 try
   if !has('win32') && $OSTYPE !~? 'cygwin\|linux' && system('uname -s') =~? 'SunOS' && system('uname -r') =~? '^5'
@@ -39,7 +40,7 @@ function neoman#get_page(bang, editcmd, args) abort
 
   if empty(sect)
     let sect = fnamemodify(system(where), ":t")
-    if fnamemodify(sect, ":e") ==# "gz\n"
+    if fnamemodify(sect, ":e") =~# '\%('.s:man_extensions.'\)\n'
       let sect = fnamemodify(sect, ":r")
     endif
     let sect = substitute(sect, '^[a-zA-Z_:.0-9-]\+\.\(\w\+\).*', '\1', '')
@@ -139,45 +140,40 @@ function s:find_page(sect, page) abort
 endfunction
 
 function! neoman#Complete(ArgLead, CmdLine, CursorPos) abort
-  let l:args = split(a:CmdLine)
-  let l:len = len(l:args)
-  if l:len == 1
-    let l:page = ""
-    let l:sect = ""
-  elseif l:len == 2
+  let args = split(a:CmdLine)
+  let len = len(args)
+  if len == 1
+    let page = ""
+    let sect = ""
+  elseif len == 2
     if empty(a:ArgLead)
-      let l:page = ""
-      let l:sect = l:args[1]
+      let page = ""
+      let sect = args[1]
     else
       if a:ArgLead =~# '[^(]('
         let tmp = split(a:ArgLead, '(')
-        let l:page = tmp[0]
+        let page = tmp[0]
         if len(tmp) == 1
-          let l:sect = ""
+          let sect = ""
         else
-          let l:sect = substitute(tmp[1], ')', '', '')
+          let sect = substitute(tmp[1], ')', '', '')
         endif
       else
-        let l:page = l:args[1]
-        let l:sect = ""
+        let page = args[1]
+        let sect = ""
       endif
     endif
   else
-    let l:page = l:args[2]
-    let l:sect = l:args[1]
+    let page = args[2]
+    let sect = args[1]
   endif
-  " TODO REPORT BUG WITH THIS CODE
-  " let l:mandirs = split($MANPATH, ':')
-  " let l:candidates = []
-  " for d in l:mandirs
-  "   let l:candidates += glob(d . "**/" . l:page . "*." . l:sect . '*', 0, 1)
-  " endfor
-  let l:mandirs_list = split(system(s:man_cmd.' '.s:man_find_arg), ':')
-  let l:mandirs = join(l:mandirs_list, ',')
-  let l:candidates = globpath(l:mandirs, "*/" . l:page . "*." . l:sect . '*', 0, 1)
-  for i in range(len(l:candidates))
-    let l:candidates[l:i] = substitute((fnamemodify(l:candidates[l:i], ":t")),
-          \ '\(.*\)\.\(.*\)', '\1(\2)', "")
+  let mandirs_list = split(system(s:man_cmd.' '.s:man_find_arg), ':\|\n')
+  let mandirs_list = filter(mandirs_list, 'index(mandirs_list, v:val, v:key+1)==-1')
+  let mandirs = join(mandirs_list, ',')
+  let candidates = globpath(mandirs, "*/" . page . "*." . sect . '*', 0, 1)
+  for i in range(len(candidates))
+    let candidates[i] = substitute((fnamemodify(candidates[i], ":t")),
+          \ '\(.\+\)\.\%('.s:man_extensions.'\)\@!\([^.]\+\).*', '\1(\2)', "")
   endfor
-  return l:candidates
+  return candidates
 endfunction
