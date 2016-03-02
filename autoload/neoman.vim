@@ -2,6 +2,7 @@ let s:man_tag_depth = 0
 let s:man_sect_arg = ''
 let s:man_find_arg = '-w'
 let s:man_cmd = 'man 2>/dev/null'
+let s:man_extensions = '[glx]z\|bz2\|lzma\|Z'
 
 try
   if !has('win32') && $OSTYPE !~? 'cygwin\|linux' && system('uname -s') =~? 'SunOS' && system('uname -r') =~? '^5'
@@ -39,7 +40,7 @@ function neoman#get_page(bang, editcmd, args) abort
 
   if empty(sect)
     let sect = fnamemodify(system(where), ":t")
-    if fnamemodify(sect, ":e") ==# "gz\n"
+    if fnamemodify(sect, ":e") =~# '\%('.s:man_extensions.'\)\n'
       let sect = fnamemodify(sect, ":r")
     endif
     let sect = substitute(sect, '^[a-zA-Z_:.0-9-]\+\.\(\w\+\).*', '\1', '')
@@ -172,7 +173,7 @@ function! neoman#Complete(ArgLead, CmdLine, CursorPos) abort
   let candidates = globpath(mandirs, "*/" . page . "*." . sect . '*', 0, 1)
   for i in range(len(candidates))
     let candidates[i] = substitute((fnamemodify(candidates[i], ":t")),
-          \ '\(.\+\)\.\%([glx]z\|bz2\|lzma\|Z\)\@!\([^.]\+\).*', '\1(\2)', "")
+          \ '\(.\+\)\.\%('.s:man_extensions.'\)\@!\([^.]\+\).*', '\1(\2)', "")
   endfor
   return candidates
 endfunction
