@@ -172,7 +172,7 @@ function! neoman#Complete(ArgLead, CmdLine, CursorPos) abort
   let candidates = globpath(mandirs, "*/" . page . "*." . sect . '*', 0, 1)
   for i in range(len(candidates))
     let candidates[i] = substitute((fnamemodify(candidates[i], ":t")),
-          \ '\(.\+\)\.\%(gz\)\@!\([^.]\+\).*', '\1(\2)', "")
+          \ '\(.\+\)\.\%([glx]z\|bz2\|lzma\|Z\)\@!\([^.]\+\).*', '\1(\2)', "")
   endfor
   return candidates
 endfunction
