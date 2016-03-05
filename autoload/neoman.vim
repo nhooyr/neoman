@@ -14,7 +14,6 @@ catch /E145:/
 endtry
 
 
-" a:args contains the section and the page
 function neoman#get_page(bang, editcmd, args) abort
   if len(a:args) > 2
     redraws! | echon "neoman: " | echohl ErrorMsg | echon "too many arguments" | echohl None
@@ -32,8 +31,8 @@ function neoman#get_page(bang, editcmd, args) abort
   endif
 
   let [sect, page] = s:parse_page_and_section(sect, page)
-  let [ok, where] = s:find_page(sect, page)
-  if !ok
+  let where = s:find_page(sect, page)
+  if where !~# '^\/'
     redraws! | echon "neoman: " | echohl ErrorMsg | echon "no manual entry for " . page | echohl None
     return
   endif
@@ -130,13 +129,7 @@ function s:cmd(sect, page) abort
 endfunction
 
 function s:find_page(sect, page) abort
-  let where = system(s:man_cmd.' '.s:man_find_arg.' '.s:cmd(a:sect, a:page))
-  if where !~ "^/"
-    if matchstr(where, " [^ ]*$") !~ "^ /"
-      return [0, '']
-    endif
-  endif
-  return [1, where]
+  return system(s:man_cmd.' '.s:man_find_arg.' '.s:cmd(a:sect, a:page))
 endfunction
 
 function! neoman#Complete(ArgLead, CmdLine, CursorPos) abort
