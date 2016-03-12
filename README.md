@@ -240,5 +240,5 @@ I'm very open to new ideas, new features, anything really ;) . Open up an issue,
 
 TODO:
 -----
-- [ ] Improve behavior of jumps (invalid jumps?)
 - [ ] Vim docs
+- [ ] Rewrite for clean code, check PR #15 to test it!
