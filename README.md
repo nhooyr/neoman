@@ -242,3 +242,5 @@ TODO:
 -----
 - [ ] Vim docs
 - [ ] Rewrite for clean code, check PR #15 to test it!
+- [ ] Parse manpages that have been seperated e.g `zshop-  
+tions(1)`
