@@ -9,6 +9,8 @@ I just renamed the command to `:Nman`, if you were using it before, just edit an
 
 I've also changed `g:neoman_current_window` to `g:find_neoman_window`.
 
+Instead of using `keywordprg` you should use the new `K` mapping because as `keywordprg` uses `iskeyword` and most filetypes don't have `(,)` in `iskeyword` which means `printf(3)` will take you to `printf(1)`. The mapping fixes this by using `<cWORD>`.
+
 ## Features
 - Smart manpage autocompletion
 - Open in a split/vsplit/tabe/current window
@@ -55,15 +57,9 @@ See `g:find_neoman_window` under settings for an explanation of the bang.
 
 ### Mappings
 ####Default Mappings
-`<c-]>` to jump to a manpage under the cursor.  
-`<c-t>` to jump back to the previous man page.  
+`<C-]>` or `K` (`K` is global) to jump to a manpage under the cursor.  
+`<C-t>` to jump back to the previous man page.  
 `q` to quit
-
-Here is a global `K` mapping to open the manpage under the cursor
-
-```vim
-nnoremap <silent> K :call neoman#get_page(g:find_neoman_window, 'edit', '')
-```
 
 Here is a custom mapping for a vertical split man page with the word under the cursor.
 
@@ -233,6 +229,9 @@ By default this is set.
 
 `g:no_neoman_maps`  
 If set, no mappings are made in neoman buffers. By default it is not set.
+
+`g:neoman_no_k`  
+If set, the global `K` mapping is not created.
 
 ## Contributing
 I'm very open to new ideas, new features, anything really ;) . Open up an issue, send me a PR, or email.
