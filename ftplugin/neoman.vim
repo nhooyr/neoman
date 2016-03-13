@@ -20,7 +20,7 @@ setl foldcolumn=0
 setl colorcolumn=0
 
 if !exists("g:no_plugin_maps") && !exists("g:no_neoman_maps")
-  nnoremap <silent> <buffer> <C-]>    :call neoman#get_page(g:find_neoman_window, 'edit', '')<CR>
+  nnoremap <silent> <buffer> <C-]>    :call neoman#get_page(g:find_neoman_window, 'edit')<CR>
   nnoremap <silent> <buffer> <C-t>    :call neoman#pop_page()<CR>
   nnoremap <silent> <buffer> q :q<CR>
 endif

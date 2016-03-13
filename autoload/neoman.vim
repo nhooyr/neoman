@@ -26,7 +26,7 @@ function! neoman#get_page(bang, editcmd, ...) abort
   if v:shell_error
     call s:error("no manual entry for ".fpage)
     return
-  elseif empty(sect)
+  elseif empty(sect) && page !~# '^\.\/'
     let sect = s:parse_sect(path)
   endif
 
@@ -94,11 +94,11 @@ function! s:parse_sect(path) abort
   if fnamemodify(tail, ":e") =~# '\%('.s:man_extensions.'\)\n'
     let tail = fnamemodify(tail, ':r')
   endif
-  return substitute(tail, '\f\.\([^.]\+\)$', '\1', '')
+  return substitute(tail, '\f\+\.\([^.]\+\)', '\1', '')
 endfunction
 
 function! s:read_page(sect, page, cmd)
-  silent exec a:cmd 'man://'.a:page.'('.a:sect.')'
+  silent exec a:cmd 'man://'.a:page.(empty(a:sect)?'':'('.a:sect.')')
   setl modifiable
   " remove all the text, incase we already loaded the manpage before
   silent keepjumps norm! gg"_dG
