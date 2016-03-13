@@ -10,8 +10,8 @@ I just renamed the command to `:Nman`, if you were using it before, just edit an
 I've also changed `g:neoman_current_window` to `g:find_neoman_window`.
 
 ## Features
-- Manpage autocompletion
-- Open in a split/vsplit/tabe or current window
+- Smart manpage autocompletion
+- Open in a split/vsplit/tabe/current window
 - Open from inside a neovim terminal!
 - Jump to manpages in specific sections through the manpage links
 - Aware of modern manpages, e.g. sections are not just 1-8 anymore
@@ -41,9 +41,9 @@ Several ways to use it, probably easier to explain with a few examples.
 :Nman printf(3)
 ```
 
-Nman without any arguments will use `<cword>` as the page.
+Nman without any arguments will use the WORD (yes not the word, it will remove any trailing characters) under the cursor as the page.
 
-For splitting/tabs there are the following commands (exact same syntax as `Nman`)
+For splitting there are the following commands (exact same syntax as `Nman`)
 
 ```vim
 :Snman 3 printf "horizontal split
@@ -54,15 +54,10 @@ For splitting/tabs there are the following commands (exact same syntax as `Nman`
 See `g:find_neoman_window` under settings for an explanation of the bang.
 
 ### Mappings
-`<c-]>` or `K` to jump to a manpage under the cursor.  
+####Default Mappings
+`<c-]>` to jump to a manpage under the cursor.  
 `<c-t>` to jump back to the previous man page.  
 `q` to quit
-
-If you are using neovim, you can also set the following in your `init.vim`/`.vimrc` and use `K` to jump to manpages globally for the word under the cursor. 
-
-```vim
-set keywordprg=:Nman
-```
 
 Here is a custom mapping for a vertical split man page with the word under the cursor.
 
@@ -73,10 +68,8 @@ nnoremap <silent> <leader>mv :Vnman<CR>
 Or perhaps you want to give the name of the manpage?
 
 ```vim
-nnoremap <leader>mv :Vnman 
+nnoremap <leader>mv :Vnman<Space>
 ```
-
-Note the trailing space after `:Vnman `
 
 ### Command line integration
 #### Neovim
@@ -241,6 +234,6 @@ I'm very open to new ideas, new features, anything really ;) . Open up an issue,
 TODO:
 -----
 - [ ] Vim docs
-- [ ] Rewrite for clean code, check PR #15 to test it!
+- [x] Rewrite for clean code, check PR #15 to test it!
 - [ ] Parse manpages that have been seperated e.g `zshop-  
 tions(1)`
