@@ -8,10 +8,10 @@ if !exists("g:find_neoman_window")
 endif
 
 command! -bang -complete=customlist,neoman#Complete -nargs=* Nman call
-      \ neoman#get_page(<bang>0, 'edit', split(<q-args>, ' '))
-command! -bang -complete=customlist,neoman#Complete -nargs=* Vnman call
-      \ neoman#get_page(<bang>0, 'vsplit', split(<q-args>, ' '))
+      \ neoman#get_page(<bang>0, 'edit', <f-args>)
 command! -bang -complete=customlist,neoman#Complete -nargs=* Snman call
-      \ neoman#get_page(<bang>0, 'split', split(<q-args>, ' '))
+      \ neoman#get_page(<bang>0, 'split', <f-args>)
+command! -bang -complete=customlist,neoman#Complete -nargs=* Vnman call
+      \ neoman#get_page(<bang>0, 'vsplit', <f-args>)
 command! -bang -complete=customlist,neoman#Complete -nargs=* Tnman call
-      \ neoman#get_page(<bang>0, 'tabe', split(<q-args>, ' '))
+      \ neoman#get_page(<bang>0, 'tabe', <f-args>)

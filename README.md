@@ -41,7 +41,7 @@ Several ways to use it, probably easier to explain with a few examples.
 :Nman printf(3)
 ```
 
-Nman without any arguments will use the WORD (yes not the word, it will remove any trailing characters) under the cursor as the page.
+Nman without any arguments will use the `WORD` (it strips anything after ')') under the cursor as the page.
 
 For splitting there are the following commands (exact same syntax as `Nman`)
 
@@ -58,6 +58,12 @@ See `g:find_neoman_window` under settings for an explanation of the bang.
 `<c-]>` to jump to a manpage under the cursor.  
 `<c-t>` to jump back to the previous man page.  
 `q` to quit
+
+Here is a global `K` mapping to open the manpage under the cursor
+
+```vim
+nnoremap <silent> K :call neoman#get_page(g:find_neoman_window, 'edit', '')
+```
 
 Here is a custom mapping for a vertical split man page with the word under the cursor.
 
@@ -237,3 +243,4 @@ TODO:
 - [x] Rewrite for clean code, check PR #15 to test it!
 - [ ] Parse manpages that have been seperated e.g `zshop-  
 tions(1)`
+- [ ] support other languages like japanese for the syntax highlighting

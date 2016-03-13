@@ -1,20 +1,20 @@
 let s:man_cmd = 'man 2>/dev/null'
 let s:man_extensions = '[glx]z\|bz2\|lzma\|Z'
 let s:neoman_tag_stack = []
-function! neoman#get_page(bang, editcmd, args) abort
-  if empty(a:args)
+function! neoman#get_page(bang, editcmd, ...) abort
+  if empty(a:000)
     let fpage = expand('<cWORD>')
     if empty(fpage)
       call s:error("no WORD under cursor")
       return
     endif
-  elseif len(a:args) > 2
+  elseif len(a:000) > 2
     call s:error('too many arguments')
     return
-  elseif len(a:args) == 1
-    let fpage = a:args[0]
+  elseif len(a:000) == 1
+    let fpage = a:000[0]
   else
-    let fpage = a:args[1].'('.a:args[0].')'
+    let fpage = a:000[1].'('.a:000[0].')'
   endif
 
   let [page, sect] = s:parse_page_and_section(fpage)
@@ -30,36 +30,18 @@ function! neoman#get_page(bang, editcmd, args) abort
     let sect = s:parse_sect(path)
   endif
 
-  let s:neoman_tag_stack = add(s:neoman_tag_stack, {
-        \ 'buf': bufnr('%'),
-        \ 'lin': line('.'),
-        \ 'col': col('.')
-        \ })
+  call s:push_stack()
 
   if g:find_neoman_window != a:bang && &filetype !=# 'neoman'
     let cmd = s:find_neoman(a:editcmd)
   else
     let cmd = a:editcmd
   endif
-  silent exec cmd 'man://'.page.'('.sect.')'
-  setl modifiable
-  " remove all the text, incase we already loaded the manpage before
-  silent keepjumps norm! gg"_dG
 
-  let $MANWIDTH = winwidth(0)-1
-  " read manpage into buffer
-  silent exec 'r!'.s:man_cmd.' '.sect.' '.page.' | col -b'
-  " remove blank lines from top and bottom.
-  while getline(1) =~ '^\s*$'
-    silent keepjumps norm! gg"_dd
-  endwhile
-  while getline('$') =~ '^\s*$'
-    silent keepjumps norm! G"_dd
-  endwhile
-  setl ft=neoman
+  call s:read_page(sect, page, cmd)
 endfunction
 
-function! neoman#pop_page() abort
+function! neoman#pop_tag_stack() abort
   if !empty(s:neoman_tag_stack)
     exec s:neoman_tag_stack[-1]['buf'].'b'
     exec s:neoman_tag_stack[-1]['lin']
@@ -68,11 +50,19 @@ function! neoman#pop_page() abort
   endif
 endfunction
 
+function! s:push_stack() abort
+  let s:neoman_tag_stack = add(s:neoman_tag_stack, {
+        \ 'buf': bufnr('%'),
+        \ 'lin': line('.'),
+        \ 'col': col('.')
+        \ })
+endfunction
+
 function! s:find_neoman(cmd) abort
   let thiswin = winnr()
   wincmd b
   if winnr() > 1
-    exe "norm! " . thiswin . "<C-W>w"
+    exec thiswin . 'wincmd w'
     while 1
       if &filetype == 'neoman'
         return 'edit'
@@ -108,6 +98,25 @@ function! s:parse_sect(path) abort
   endif
   return substitute(tail, '\f\.\([^.]\+\)$', '\1', '')
 endfunction
+
+function! s:read_page(sect, page, cmd)
+  silent exec a:cmd 'man://'.a:page.'('.a:sect.')'
+  setl modifiable
+  " remove all the text, incase we already loaded the manpage before
+  silent keepjumps norm! gg"_dG
+  let $MANWIDTH = winwidth(0)-1
+  " read manpage into buffer
+  silent exec 'r!'.s:man_cmd.' '.a:sect.' '.a:page.' | col -b'
+  " remove blank lines from top and bottom.
+  while getline(1) =~ '^\s*$'
+    silent keepjumps 1delete _
+  endwhile
+  while getline('$') =~ '^\s*$'
+    silent keepjumps $delete _
+  endwhile
+  setl ft=neoman
+endfunction
+
 
 function! s:error(msg) abort
   redraws!
