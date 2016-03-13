@@ -73,6 +73,8 @@ Or perhaps you want to give the name of the manpage?
 nnoremap <leader>mv :Vnman<Space>
 ```
 
+Put them in autocmds to have them set only for neoman buffers.
+
 ### Command line integration
 #### Neovim
 You will need [nvr](https://github.com/mhinz/neovim-remote) for the super cool neovim terminal integration. If you do not want it, just use the vim version and obviously change the command to `nvim`.
