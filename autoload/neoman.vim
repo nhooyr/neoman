@@ -165,10 +165,15 @@ function! s:get_candidates(page, sect) abort
     let find .= '([^.]\+\).*'
     let repl = '\1(\2)'
   endif
-  for i in range(len(candidates))
-    let candidates[i] = substitute((fnamemodify(candidates[i], ":t")),
-          \ find, repl, "")
-  endfor
+  if a:sect ==# '*' && a:page =~# '^\.\/'
+    "TODO why does this complete the last one automatically
+    let candidates = glob(a:page.'*', 0, 1)
+  else
+    for i in range(len(candidates))
+      let candidates[i] = substitute((fnamemodify(candidates[i], ":t")),
+            \ find, repl, "")
+    endfor
+  endif
   return candidates
 endfunction
 
