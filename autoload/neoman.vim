@@ -104,7 +104,8 @@ function! s:read_page(sect, page, cmd)
   silent keepjumps norm! gg"_dG
   let $MANWIDTH = winwidth(0)-1
   " read manpage into buffer
-  silent exec 'r!'.s:man_cmd.' '.a:sect.' '.a:page.' | col -b'
+  silent exec 'r!'.s:man_cmd.' '.a:sect.' '.a:page
+  silent %substitute,.,,g
   " remove blank lines from top and bottom.
   while getline(1) =~ '^\s*$'
     silent keepjumps 1delete _
