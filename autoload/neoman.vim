@@ -59,10 +59,8 @@ function! s:push_stack() abort
 endfunction
 
 function! s:find_neoman(cmd) abort
-  let thiswin = winnr()
-  wincmd b
-  if winnr() > 1
-    exec thiswin . 'wincmd w'
+  if winnr('$') > 1
+    let thiswin = winnr()
     while 1
       if &filetype == 'neoman'
         return 'edit'
