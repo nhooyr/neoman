@@ -9,9 +9,6 @@ endif
 
 command! -bang -complete=customlist,neoman#Complete -nargs=* Nman call
       \ neoman#get_page(<bang>0, 'edit', <f-args>)
-if !exists('g:neoman_no_k')
-  nnoremap <silent> K :Nman<CR>
-endif
 command! -bang -complete=customlist,neoman#Complete -nargs=* Snman call
       \ neoman#get_page(<bang>0, 'split', <f-args>)
 command! -bang -complete=customlist,neoman#Complete -nargs=* Vnman call
