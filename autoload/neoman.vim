@@ -26,7 +26,7 @@ function! neoman#get_page(bang, editcmd, ...) abort
   if v:shell_error
     call s:error("no manual entry for ".fpage)
     return
-  elseif empty(sect) && page !~# '^\.\/'
+  elseif empty(sect) && page !~# '\/'
     let sect = s:parse_sect(path)
   endif
 
@@ -165,7 +165,7 @@ function! s:get_candidates(page, sect) abort
     let find .= '([^.]\+\).*'
     let repl = '\1(\2)'
   endif
-  if a:sect ==# '*' && a:page =~# '^\.\/'
+  if a:sect ==# '*' && a:page =~# '\/'
     "TODO why does this complete the last one automatically
     let candidates = glob(a:page.'*', 0, 1)
   else
