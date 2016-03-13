@@ -3,21 +3,21 @@ if exists('b:did_ftplugin')
 endif
 let b:did_ftplugin = 1
 
-setl buftype=nofile
-setl noswapfile
-setl nofoldenable
-setl bufhidden=hide
-setl nobuflisted
-setl nomodified
-setl readonly
-setl nomodifiable
-setl noexpandtab
-setl tabstop=8
-setl softtabstop=8
-setl shiftwidth=8
-setl nolist
-setl foldcolumn=0
-setl colorcolumn=0
+setlocal buftype=nofile
+setlocal noswapfile
+setlocal nofoldenable
+setlocal bufhidden=hide
+setlocal nobuflisted
+setlocal nomodified
+setlocal readonly
+setlocal nomodifiable
+setlocal noexpandtab
+setlocal tabstop=8
+setlocal softtabstop=8
+setlocal shiftwidth=8
+setlocal nolist
+setlocal foldcolumn=0
+setlocal colorcolumn=0
 
 if !exists("g:no_plugin_maps") && !exists("g:no_neoman_maps")
   nnoremap <silent> <buffer> <C-]>    :call neoman#get_page(g:find_neoman_window, 'edit')<CR>
