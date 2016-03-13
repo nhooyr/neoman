@@ -3,9 +3,6 @@ if exists('b:did_ftplugin')
 endif
 let b:did_ftplugin = 1
 
-setl iskeyword+=\.,-,(,),:
-let b:undo_ftplugin = 'setl iskeyword<'
-
 setl buftype=nofile
 setl noswapfile
 setl nofoldenable
@@ -26,7 +23,4 @@ if !exists("g:no_plugin_maps") && !exists("g:no_neoman_maps")
   nnoremap <silent> <buffer> <C-]>    :call neoman#get_page(g:find_neoman_window, 'edit', '')<CR>
   nnoremap <silent> <buffer> <C-t>    :call neoman#pop_page()<CR>
   nnoremap <silent> <buffer> q :q<CR>
-  if &keywordprg !=# ':Nman'
-    nnoremap <silent> <buffer> K      :call neoman#get_page(g:find_neoman_window, 'edit', '')<CR>
-  endif
 endif
