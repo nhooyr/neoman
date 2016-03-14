@@ -240,8 +240,10 @@ By default this is set.
 `g:no_neoman_maps`  
 If set, no mappings are made in neoman buffers. By default it is not set.
 
-`g:neoman_no_k`  
-If set, the global `K` mapping is not created.
+`g:neoman_synopsis`  
+If you are using a language other than english, set this to whatever the 'Synopsis' translates to in your language. This allows neoman to highlight the c code in manpages of sections 2 and 3.  
+Just run `man acct` from the command line. Set this to the line above the '#include' (it is a regex if you want to do multiple matches)
+By default it is set to just `SYNOPSIS`, as most people will be using english manpages.
 
 ## Contributing
 I'm very open to new ideas, new features, anything really ;) . Open up an issue, send me a PR, or email.
@@ -250,6 +252,5 @@ TODO:
 -----
 - [ ] Vim docs
 - [x] Rewrite for clean code, check PR #15 to test it!
-- [ ] Parse manpages that have been seperated e.g `zshop-  
+- [ ] Maybe parse manpage links that have been seperated e.g `zshop-  
 tions(1)`
-- [ ] support other languages like japanese for the syntax highlighting
