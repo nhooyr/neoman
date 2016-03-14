@@ -1,21 +1,26 @@
-let s:man_cmd = 'man 2>/dev/null'
+" Ensure Vim is not recursively invoked (man-db does this)
+" when doing ctrl-] on a man page reference. More info here
+" http://comments.gmane.org/gmane.editors.vim.devel/29085
+let s:man_cmd = 'unset MANPAGER; man 2>/dev/null'
 " regex for valid extensions that manpages can have
 let s:man_extensions = '[glx]z\|bz2\|lzma\|Z'
 let s:neoman_tag_stack = []
 function! neoman#get_page(bang, editcmd, ...) abort
-  " fpage is a string like 'printf(2)'
-  if empty(a:000)
+  " fpage is a string like 'printf(2)' or just 'prinf'
+  if a:0 == 0
     let fpage = expand('<cWORD>')
     if empty(fpage)
       call s:error("no WORD under cursor")
       return
     endif
-  elseif len(a:000) > 2
+  elseif a:0 > 2
     call s:error('too many arguments')
     return
-  elseif len(a:000) == 1
+  elseif a:0 == 1
+    " only page
     let fpage = a:000[0]
   else
+    " page and sect
     let fpage = a:000[1].'('.a:000[0].')'
   endif
 
@@ -40,7 +45,7 @@ function! neoman#get_page(bang, editcmd, ...) abort
 
   call s:push_tag_stack()
 
-  if g:find_neoman_window != a:bang && &filetype !=# 'neoman'
+  if g:neoman_find_window != a:bang && &filetype !=# 'neoman'
     let cmd = s:find_neoman(a:editcmd)
   else
     let cmd = a:editcmd
@@ -114,12 +119,12 @@ function! s:read_page(sect, page, cmd)
   silent execute a:cmd 'man://'.a:page.(empty(a:sect)?'':'('.a:sect.')')
   setlocal modifiable
   " remove all the text, incase we already loaded the manpage before
-  silent keepjumps normal! gg"_dG
+  silent keepjumps %delete _
   let $MANWIDTH = winwidth(0)-1
   " read manpage into buffer
   silent execute 'r!'.s:man_cmd.' '.a:sect.' '.a:page
   " remove all those backspaces
-  silent! keepjumps %substitute,.,,g
+  execute "silent! keepjumps %substitute,.\b,,g"
   " remove blank lines from top and bottom.
   while getline(1) =~# '^\s*$'
     silent keepjumps 1delete _
@@ -127,12 +132,12 @@ function! s:read_page(sect, page, cmd)
   while getline('$') =~# '^\s*$'
     silent keepjumps $delete _
   endwhile
-  keepjumps normal! gg
+  keepjumps 1
   setlocal filetype=neoman
 endfunction
 
 function! s:error(msg) abort
-  redraws!
+  redrawstatus!
   echon "neoman: "
   echohl ErrorMsg
   echon a:msg
@@ -196,9 +201,7 @@ function! s:get_candidates(page, sect, fpage) abort
       let find .= '([^.]\+\).*'
       let repl = '\1(\2)'
     endif
-    for i in range(len(candidates))
-      let candidates[i] = substitute((fnamemodify(candidates[i], ":t")), find, repl, "")
-    endfor
+    call map(candidates, 'substitute((fnamemodify(v:val, ":t")), '.find.', '.repl.', "")')
   endif
   return candidates
 endfunction

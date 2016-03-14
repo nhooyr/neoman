@@ -7,7 +7,7 @@ Read manpages faster than superman!
 ## ATTENTION
 I just renamed the command to `:Nman`, if you were using it before, just edit any mappings or the functions in your `.zshrc`/`.bashrc`.
 
-I've also changed `g:neoman_current_window` to `g:find_neoman_window`.
+I've also changed `g:neoman_current_window` to `g:neoman_find_window`.
 
 Instead of using `keywordprg` you should use the new `K` mapping described under [mappings](#mappings)
 
