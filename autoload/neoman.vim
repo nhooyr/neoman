@@ -127,7 +127,7 @@ function! s:read_page(sect, page, cmd)
   while getline('$') =~# '^\s*$'
     silent keepjumps $delete _
   endwhile
-  normal! gg
+  keepjumps normal! gg
   setlocal filetype=neoman
 endfunction
 
