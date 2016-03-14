@@ -86,13 +86,13 @@ endfunction
 " parses the sect/page out of 'page(sect)'
 function! s:parse_page_and_section(fpage) abort
   let ret = split(a:fpage, '(')
-  if empty(ret) || len(ret) > 2
-    return ['', '']
-  elseif len(ret) == 1
-    return [ret[0], '']
-  elseif ret[1] =~# '^\f\+)\f*$'
+  if len(ret) == 2 && ret[1] =~# '^\f\+)\f*$'
     let iret = split(ret[1], ')')
     return [ret[0], iret[0]]
+  elseif len(ret) == 1
+    return [ret[0], '']
+  else
+    return ['', '']
   endif
 endfunction
 
