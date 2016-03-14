@@ -255,5 +255,4 @@ TODO:
 -----
 - [ ] Vim docs
 - [x] Rewrite for clean code, check PR #15 to test it!
-- [ ] Maybe parse manpage links that have been seperated e.g `zshop-  
-tions(1)`
+- [ ] Scripts in their own files, simply source so everyone gets updates automatically.
