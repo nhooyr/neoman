@@ -24,10 +24,10 @@ if getline(1) =~# '^\f\+([23])'
   " skip first heading
   keepjumps call search('^\%(\S.*\)\=\S$')
   " get second heading, aka the synopsis heading
-  let l = getline(search('^\%(\S.*\)\=\S$', 'n'))
+  let l = escape(getline(search('^\%(\S.*\)\=\S$', 'n')), '\')
   keepjumps normal! gg
   syntax match manCFuncDefinition display "\<\h\w*\>\s*("me=e-1 contained
-  execute 'syntax region manSynopsis start="\M^'.l.'$"hs=s+8 end="^\%(\S.*\)\=\S$"me=e-12 keepend contains=manSectionHeading,@cCode,manCFuncDefinition'
+  execute 'syntax region manSynopsis start="\V\^'.l.'\$"hs=s+8 end="^\%(\S.*\)\=\S$"me=e-12 keepend contains=manSectionHeading,@cCode,manCFuncDefinition'
   highlight default link manCFuncDefinition Function
 endif
 
