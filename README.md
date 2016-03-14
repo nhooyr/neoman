@@ -93,6 +93,10 @@ You will need [nvr](https://github.com/mhinz/neovim-remote) for the super cool n
 #####zsh/bash
 ```zsh
 function _nman {
+	if (( $# > 3 )); then
+		echo "Too many arguements"
+		return
+	fi
 	local l=$#
 	local -a page
 	local page=(${@:1:$l-1})
@@ -104,11 +108,11 @@ function _nman {
 	IFS=$'\n' out=($(command man -w ${page[@]} 2>&1))
 	local code=$?
 	IFS=$tmp
-	if [[ ${#out[@]} > 1 ]]; then
+	if [[ ${#out[@]} > 1 ]] && (( $# > 2 )); then
 		echo "Too many manpages"
 		return
 	elif [[ $code != 0 ]]; then
-		echo "No manual entry for ${page[*]}"
+		printf '%s\n' "${out[@]}"
 		return
 	fi
 	if [[ -z $NVIM_LISTEN_ADDRESS ]]; then
@@ -132,22 +136,22 @@ function _nman
 	if [ -z "$page" ]
 		echo "What manual page do you want?"
 		return
-    end
-    set out (eval "command man -w $page 2>&1")
-    set code $status
-    set manpage_count (echo "$out" | grep -c '.*')
-    if [ $manpage_count -gt 1 ]
-	    echo "Too many manpages: $manpage_count"
-	    return
-    else if [ $code != 0 ]
-	    echo "No manual entry for $page"
-	    return
-    end
-    if [ -z $NVIM_LISTEN_ADDRESS ]
-	    command nvim -c "$argv[-1] $page"
-    else
-	    nvr --remote-send "<c-n>" -c "$argv[-1] $page"
-    end
+	end
+	set out (eval "command man -w $page 2>&1")
+	set code $status
+	set manpage_count (echo "$out" | grep -c '.*')
+	if [ $manpage_count -gt 1 ]
+		echo "Too many manpages: $manpage_count"
+		return
+	else if [ $code != 0 ]
+		echo "No manual entry for $page"
+		return
+	end
+	if [ -z $NVIM_LISTEN_ADDRESS ]
+		command nvim -c "$argv[-1] $page"
+	else
+		nvr --remote-send "<c-n>" -c "$argv[-1] $page"
+	end
 end
 function nman
 	_nman "$argv" 'Nman'
@@ -166,7 +170,10 @@ Don't forget to add the autocomplete aliases from below but obviously rename the
 #####zsh/bash
 ```zsh
 function nman {
-	if [[ -z $* ]]; then
+	if (( $# > 3 )); then
+		echo "Too many arguements"
+		return
+	elif [[ -z $* ]]; then
 		echo "What manual page do you want?"
 		return
 	fi
@@ -174,11 +181,11 @@ function nman {
 	IFS=$'\n' out=($(command man -w $* 2>&1))
 	local code=$?
 	IFS=$tmp
-	if [[ ${#out[@]} > 1 ]]; then
+	if [[ ${#out[@]} > 1 ]] && (( $# > 2 )); then
 		echo "Too many manpages"
 		return
 	elif [[ $code != 0 ]]; then
-		echo "No manual entry for $*"
+		printf '%s\n' "${out[@]}"
 		return
 	fi
 	vim -c "Nman $*"
