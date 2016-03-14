@@ -2,9 +2,6 @@ if exists("b:current_syntax")
   finish
 endif
 
-" Get the CTRL-H syntax to handle backspaced text
-runtime! syntax/ctrlh.vim
-
 syntax case  ignore
 syntax match manReference       "\f\+(\%([0-8][a-z]\=\|n\))"
 syntax match manTitle           "^\%1l\S\+\%((\%([0-8][a-z]\=\|n\))\)\=.*$"

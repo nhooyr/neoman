@@ -14,10 +14,13 @@ Instead of using `keywordprg` you should use the new `K` mapping described under
 ## Features
 - Smart manpage autocompletion
 - Open in a split/vsplit/tabe/current window
+- Control whether or not to jump to closest (above/left) neoman window with the bang
 - Open from inside a neovim terminal!
 - Jump to manpages in specific sections through the manpage links
 - Aware of modern manpages, e.g. sections are not just 1-8 anymore
 - zsh/bash/fish support
+- Can open paths to manpages!
+- Support for multiple languages! If you will use it with another language, make sure to see `g:neoman_synopsis`.
 
 ## Install
 Any plugin manager should work fine.
