@@ -119,7 +119,7 @@ function! s:read_page(sect, page, cmd)
   " read manpage into buffer
   silent execute 'r!'.s:man_cmd.' '.a:sect.' '.a:page
   " remove all those backspaces
-  silent! %substitute,.,,g
+  silent! keepjumps %substitute,.,,g
   " remove blank lines from top and bottom.
   while getline(1) =~# '^\s*$'
     silent keepjumps 1delete _
