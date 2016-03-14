@@ -1,10 +1,22 @@
 " Ensure Vim is not recursively invoked (man-db does this)
 " when doing ctrl-] on a man page reference. More info here
 " http://comments.gmane.org/gmane.editors.vim.devel/29085
-let s:man_cmd = 'unset MANPAGER; man 2>/dev/null'
+let s:man_cmd = 'unset MANPAGER; man 2>/dev/null '
 " regex for valid extensions that manpages can have
 let s:man_extensions = '[glx]z\|bz2\|lzma\|Z'
-let s:neoman_tag_stack = []
+let s:man_sect_arg = ''
+let s:man_find_arg = '-w'
+let s:man_tag_stack = []
+
+try
+  if !has('win32') && $OSTYPE !~? 'cygwin\|linux' && system('uname -s') =~? 'SunOS' && system('uname -r') =~? '^5'
+    let s:man_sect_arg = '-s'
+    let s:man_find_arg = '-l'
+  endif
+catch /E145:/
+  " Ignore the error in restricted mode
+endtry
+
 function! neoman#get_page(bang, editcmd, ...) abort
   " fpage is a string like 'printf(2)' or just 'prinf'
   if a:0 == 0
@@ -56,17 +68,17 @@ endfunction
 
 " move to previous position in the stack
 function! neoman#pop_tag_stack() abort
-  if !empty(s:neoman_tag_stack)
-    execute s:neoman_tag_stack[-1]['buf'].'b'
-    execute s:neoman_tag_stack[-1]['lin']
-    execute 'normal! '.s:neoman_tag_stack[-1]['col'].'|'
-    call remove(s:neoman_tag_stack, -1)
+  if !empty(s:man_tag_stack)
+    execute s:man_tag_stack[-1]['buf'].'b'
+    execute s:man_tag_stack[-1]['lin']
+    execute 'normal! '.s:man_tag_stack[-1]['col'].'|'
+    call remove(s:man_tag_stack, -1)
   endif
 endfunction
 
 " save current position
 function! s:push_tag_stack() abort
-  let s:neoman_tag_stack = add(s:neoman_tag_stack, {
+  let s:man_tag_stack = add(s:man_tag_stack, {
         \ 'buf': bufnr('%'),
         \ 'lin': line('.'),
         \ 'col': col('.')
@@ -103,7 +115,7 @@ endfunction
 
 " returns the path of a manpage
 function! s:find_page(sect, page) abort
-  return split(system(s:man_cmd.' -w '.a:sect.' '.a:page), '\n')
+  return split(system(s:man_cmd.s:man_find_arg.' '.s:cmd_args(a:sect, a:page)), '\n')
 endfunction
 
 " parses the section out of the path to a manpage
@@ -122,7 +134,7 @@ function! s:read_page(sect, page, cmd)
   silent keepjumps %delete _
   let $MANWIDTH = winwidth(0)-1
   " read manpage into buffer
-  silent execute 'r!'.s:man_cmd.' '.a:sect.' '.a:page
+  silent execute 'r!'.s:man_cmd.s:cmd_args(a:sect, a:page)
   " remove all those backspaces
   execute "silent! keepjumps %substitute,.\b,,g"
   " remove blank lines from top and bottom.
@@ -134,6 +146,13 @@ function! s:read_page(sect, page, cmd)
   endwhile
   keepjumps 1
   setlocal filetype=neoman
+endfunction
+
+function s:cmd_args(sect, page) abort
+  if !empty(a:sect)
+    return s:man_sect_arg.' '.a:sect.' '.a:page
+  endif
+  return a:page
 endfunction
 
 function! s:error(msg) abort
@@ -201,14 +220,14 @@ function! s:get_candidates(page, sect, fpage) abort
       let find .= '([^.]\+\).*'
       let repl = '\1(\2)'
     endif
-    call map(candidates, 'substitute((fnamemodify(v:val, ":t")), '.find.', '.repl.', "")')
+    call map(candidates, 'substitute((fnamemodify(v:val, ":t")), find, repl, "")')
   endif
   return candidates
 endfunction
 
 function! s:MANDIRS() abort
   " gets list of MANDIRS
-  let mandirs_list = split(system(s:man_cmd.' -w'), ':\|\n')
+  let mandirs_list = split(system(s:man_cmd.s:man_find_arg), ':\|\n')
   " removes duplicates and then joins by comma
   return join(filter(mandirs_list, 'index(mandirs_list, v:val, v:key+1)==-1'), ',')
 endfunction
