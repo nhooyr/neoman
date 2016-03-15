@@ -75,17 +75,16 @@ function! neoman#pop_tag() abort
   if !empty(s:tag_stack)
     let tag = remove(s:tag_stack, -1)
     execute tag['buf'].'b'
-    execute tag['lin']
-    execute 'normal! '.tag['col'].'|'
+    call cursor(tag['lnum'], tag['col'])
   endif
 endfunction
 
 " save current position
 function! s:push_tag() abort
   let s:tag_stack += [{
-        \ 'buf': bufnr('%'),
-        \ 'lin': line('.'),
-        \ 'col': col('.')
+        \ 'buf':  bufnr('%'),
+        \ 'lnum': line('.'),
+        \ 'col':  col('.'),
         \ }]
 endfunction
 
