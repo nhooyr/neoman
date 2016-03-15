@@ -23,5 +23,5 @@ if !exists("g:no_plugin_maps") && !exists("g:no_neoman_maps")
   nnoremap <silent> <buffer> <C-]>    :call neoman#get_page(g:neoman_find_window, 'edit')<CR>
   nmap     <silent> <buffer> <K>      <C-]>
   nnoremap <silent> <buffer> <C-t>    :call neoman#pop_tag_stack()<CR>
-  nnoremap <silent> <nowait><buffer>  q <C-W>c
+  nnoremap <silent> <nowait><buffer>  q :q<CR>
 endif
