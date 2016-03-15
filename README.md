@@ -113,7 +113,7 @@ By default this is set.
 `g:neoman_synopsis`  
 In manpages of sections 2 and 3, there is sometimes some c code under the heading `SYNOPSIS`. In english we can just match `SYNOPSIS` and then can highlight all of the c code underneath.  
 However in other languages, `SYNOPSIS` is a different word, so how are we to tell where the synopsis heading is? This variable is a regex that is used to match the synopsis heading, modify it for the language(s) you will be using.  
-Defaults to`'\V\^SYNOPSIS\$'`
+Defaults to `\V\^SYNOPSIS\$`
 
 `g:no_neoman_maps`  
 If set, no mappings are made in neoman buffers. By default it is not set.
