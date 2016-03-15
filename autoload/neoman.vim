@@ -1,6 +1,11 @@
 " Ensure Vim is not recursively invoked (man-db does this)
+" by removing MANPAGER from the environment
 " More info here http://comments.gmane.org/gmane.editors.vim.devel/29085
-let s:man_cmd = 'unset MANPAGER; man 2>/dev/null '
+if &shell =~# 'fish$'
+  let s:man_cmd = 'set -e MANPAGER; man ^/dev/null'
+else
+  let s:man_cmd = 'unset MANPAGER; man 2>/dev/null '
+endif
 " regex for valid extensions that manpages can have
 let s:man_extensions = '[glx]z\|bz2\|lzma\|Z'
 let s:man_sect_arg = ''
