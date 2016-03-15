@@ -10,7 +10,7 @@ endif
 let s:man_extensions = '[glx]z\|bz2\|lzma\|Z'
 let s:man_sect_arg = ''
 let s:man_find_arg = '-w'
-let s:man_tag_stack = []
+let s:tag_stack = []
 
 try
   if !has('win32') && $OSTYPE !~? 'cygwin\|linux' && system('uname -s') =~? 'SunOS' && system('uname -r') =~? '^5'
@@ -59,7 +59,7 @@ function! neoman#get_page(bang, editcmd, ...) abort
     endif
   endif
 
-  call s:push_tag_stack()
+  call s:push_tag()
 
   if g:neoman_find_window != a:bang && &filetype !=# 'neoman'
     let cmd = s:find_neoman(a:editcmd)
@@ -71,22 +71,22 @@ function! neoman#get_page(bang, editcmd, ...) abort
 endfunction
 
 " move to previous position in the stack
-function! neoman#pop_tag_stack() abort
-  if !empty(s:man_tag_stack)
-    execute s:man_tag_stack[-1]['buf'].'b'
-    execute s:man_tag_stack[-1]['lin']
-    execute 'normal! '.s:man_tag_stack[-1]['col'].'|'
-    call remove(s:man_tag_stack, -1)
+function! neoman#pop_tag() abort
+  if !empty(s:tag_stack)
+    let tag = remove(s:tag_stack, -1)
+    execute tag['buf'].'b'
+    execute tag['lin']
+    execute 'normal! '.tag['col'].'|'
   endif
 endfunction
 
 " save current position
-function! s:push_tag_stack() abort
-  let s:man_tag_stack = add(s:man_tag_stack, {
+function! s:push_tag() abort
+  let s:tag_stack += [{
         \ 'buf': bufnr('%'),
         \ 'lin': line('.'),
         \ 'col': col('.')
-        \ })
+        \ }]
 endfunction
 
 " find the closest neoman window above/left
