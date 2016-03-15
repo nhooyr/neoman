@@ -56,7 +56,7 @@ For splitting there are the following commands (exact same syntax as `Nman`)
 :Tnman 3 printf "in a new tab
 ```
 
-See `g:find_neoman_window` under settings for an explanation of the bang.
+See `g:neoman_find_window` under settings for an explanation of the bang.
 
 ### Mappings
 ####Default Mappings
@@ -85,163 +85,28 @@ nnoremap <leader>mv :Vnman<Space>
 ```
 
 ### Command line integration
-#### Neovim
-You will need [nvr](https://github.com/mhinz/neovim-remote) for the super cool neovim terminal integration. If you do not want it, just use the vim version and obviously change the command to `nvim`.
-
-#####zsh/bash
+#### zsh/bash
+Add one to your `.zshrc`/`.bashrc`
 ```zsh
-function _nman {
-	if (( $# > 3 )); then
-		echo "Too many arguements"
-		return
-	fi
-	local l=$#
-	local -a page
-	local page=(${@:1:$l-1})
-	if [[ -z "$page" ]]; then
-		echo "What manual page do you want?"
-		return
-	fi
-	local tmp=$IFS
-	IFS=$'\n' out=($(command man -w ${page[@]} 2>&1))
-	local code=$?
-	IFS=$tmp
-	if [[ ${#out[@]} > 1 ]] && (( $# > 2 )); then
-		echo "Too many manpages"
-		return
-	elif [[ $code != 0 ]]; then
-		printf '%s\n' "${out[@]}"
-		return
-	fi
-	if [[ -z $NVIM_LISTEN_ADDRESS ]]; then
-		command nvim -c "${@: -1} ${page[*]}"
-	else
-		nvr --remote-send "<c-n>" -c "${@: -1} ${page[*]}"
-	fi
-}
-function nman {
-	_nman "$@" 'Nman'
-}
-function nman! {
-	_nman "$@" 'Nman!'
-}
+source /somepath/neoman.vim/scripts/neovim.zsh  #if neovim
+source /somepath/neoman.vim/scripts/vim.zsh     #if vim
 ```
 
-#####fish
+#### fish
+Add one to your `config.fish`
 ```fish
-function _nman
-	set page $argv[1..-2]
-	if [ -z "$page" ]
-		echo "What manual page do you want?"
-		return
-	end
-	set out (eval "command man -w $page 2>&1")
-	set code $status
-	set manpage_count (echo "$out" | grep -c '.*')
-	if [ $manpage_count -gt 1 ]
-		echo "Too many manpages: $manpage_count"
-		return
-	else if [ $code != 0 ]
-		echo "No manual entry for $page"
-		return
-	end
-	if [ -z $NVIM_LISTEN_ADDRESS ]
-		command nvim -c "$argv[-1] $page"
-	else
-		nvr --remote-send "<c-n>" -c "$argv[-1] $page"
-	end
-end
-function nman
-	_nman "$argv" 'Nman'
-end
-function nman!
-	_nman "$argv" 'Nman!'
-end
+source /somepath/neoman.vim/scripts/neovim.fish #if neovim
+source /somepath/neoman.vim/scripts/vim.fish    #if vim
 ```
 
-#####Splitting from neovim terminals
-Say you want to vertical split a manpage from within a neovim terminal.  
-Duplicate the two small functions, rename them to `vnman` and `vnman!` and change the string arguments of `_nman` to `'Vnman'` and `'Vnman!''`.  
-Don't forget to add the autocomplete aliases from below but obviously rename them to fit.
+You will need [nvr](https://github.com/mhinz/neovim-remote) for the super cool neovim terminal integration.
 
-#### Vim
-#####zsh/bash
-```zsh
-function nman {
-	if (( $# > 3 )); then
-		echo "Too many arguements"
-		return
-	elif [[ -z $* ]]; then
-		echo "What manual page do you want?"
-		return
-	fi
-	local tmp=$IFS
-	IFS=$'\n' out=($(command man -w $* 2>&1))
-	local code=$?
-	IFS=$tmp
-	if [[ ${#out[@]} > 1 ]] && (( $# > 2 )); then
-		echo "Too many manpages"
-		return
-	elif [[ $code != 0 ]]; then
-		printf '%s\n' "${out[@]}"
-		return
-	fi
-	vim -c "Nman $*"
-}
-```
-
-#####fish
-```fish
-function nman
-	if [ -z "$argv" ]
-		echo "What manual page do you want?"
-		return
-    end
-    set out (eval "command man -w $argv 2>&1")
-    set code $status
-    set manpage_count (echo "$out" | grep -c '.*')
-    if [ $manpage_count -gt 1 ]
-	    echo "Too many manpages: $manpage_count"
-	    return
-    else if [ $code != 0 ]
-	    echo "No manual entry for $argv"
-	    return
-    end
-    vim -c "Nman $argv"
-end
-```
-
-#### Autocomplete
-##### zsh
-```zsh
-compdef nman="man"
-
-#add this as well if you are using neovim
-compdef nman!="man"
-```
-
-##### bash
-```bash
-complete -o default -o nospace -F _man nman
-
-#add this as well if you are using neovim
-complete -o default -o nospace -F _man nman!
-```
-
-##### fish
-```fish
-complete --command nman --wraps=man
-
-#add this as well if you are using neovim
-complete --command nman! --wraps=man
-```
-
-Use `nman`/`nman!` to open the manpages. `nman!` works the same way as `:Nman!`, but obviously its only available for neovim. You have to be connected remotely in order to find the neoman window, otherwise it doesn't matter, see `g:find_neoman_window`.
+Use `nman`/`nman!` to open the manpages. `nman!` works the same way as `:Nman!`, but obviously its only available for neovim. You have to be connected remotely in order to find the neoman window, otherwise it doesn't matter, see `g:neoman_find_window`.
 
 I've really only tested this with zsh, if you have any problems with `bash`/`fish`, please open a issue!
 
 ### Settings
-`g:find_neoman_window`  
+`g:neoman_find_window`  
 If this option is set, neoman will first attempt to find the current neoman window before opening a new one. The bang on `:Nman` will alternate on this behavior. So if this option is set, the bang will make it act like as if it is not set, and vice versa.  
 By default this is set.
 
@@ -255,4 +120,4 @@ TODO:
 -----
 - [ ] Vim docs
 - [x] Rewrite for clean code, check PR #15 to test it!
-- [ ] Scripts in their own files, simply source so everyone gets updates automatically.
+- [ ] Update fish script
