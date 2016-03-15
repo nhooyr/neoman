@@ -120,4 +120,4 @@ TODO:
 -----
 - [ ] Vim docs
 - [x] Rewrite for clean code, check PR #15 to test it!
-- [ ] Update fish script
+- [x] Update fish script
