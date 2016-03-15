@@ -118,7 +118,7 @@ endfunction
 
 " returns the path of a manpage
 function! s:find_page(sect, page) abort
-  return split(system(s:man_cmd.s:man_find_arg.' '.s:cmd_args(a:sect, a:page)), '\n')
+  return split(system(s:man_cmd.s:man_find_arg.' '.s:man_args(a:sect, a:page)), '\n')
 endfunction
 
 " parses the section out of the path to a manpage
@@ -137,7 +137,7 @@ function! s:read_page(sect, page, cmd)
   silent keepjumps %delete _
   let $MANWIDTH = winwidth(0)-1
   " read manpage into buffer
-  silent execute 'r!'.s:man_cmd.s:cmd_args(a:sect, a:page)
+  silent execute 'r!'.s:man_cmd.s:man_args(a:sect, a:page)
   " remove all those backspaces
   execute "silent! keepjumps %substitute,.\b,,g"
   " remove blank lines from top and bottom.
@@ -151,11 +151,11 @@ function! s:read_page(sect, page, cmd)
   setlocal filetype=neoman
 endfunction
 
-function s:cmd_args(sect, page) abort
+function s:man_args(sect, page) abort
   if !empty(a:sect)
-    return s:man_sect_arg.' '.a:sect.' '.a:page
+    return s:man_sect_arg.' '.shellescape(a:sect).' '.shellescape(a:page)
   endif
-  return a:page
+  return shellescape(a:page)
 endfunction
 
 function! s:error(msg) abort

@@ -20,19 +20,8 @@ highlight default link manSubHeading     Function
 
 if getline(1) =~# '^\f\+([23][a-zA-Z]\=)'
   syntax include @cCode $VIMRUNTIME/syntax/c.vim
-  " skip first heading
-  keepjumps call search('^\%(\S.*\)\=\S$')
-  keepjumps call search('^\%(\S.*\)\=\S$')
-  " get second heading, aka the synopsis heading
-  let s:l = escape(getline('.'), '\')
-  " why bsd...
-  if s:l ==# 'LIBRARY'
-    keepjumps call search('^\%(\S.*\)\=\S$')
-    let s:l = escape(getline('.'), '\')
-  endif
-  keepjumps 1
   syntax match manCFuncDefinition display "\<\h\w*\>\s*("me=e-1 contained
-  execute 'syntax region manSynopsis start="\V\^'.s:l.'\$"hs=s+8 end="^\%(\S.*\)\=\S$"me=e-12 keepend contains=manSectionHeading,@cCode,manCFuncDefinition'
+  execute "syntax region manSynopsis start='".g:neoman_synopsis."'".'hs=s+8 end="^\%(\S.*\)\=\S$"me=e-12 keepend contains=manSectionHeading,@cCode,manCFuncDefinition'
   highlight default link manCFuncDefinition Function
 endif
 

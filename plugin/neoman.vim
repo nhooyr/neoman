@@ -7,6 +7,10 @@ if !exists("g:neoman_find_window")
   let g:neoman_find_window = 1
 endif
 
+if !exists("g:neoman_synopsis")
+  let g:neoman_synopsis = '\V\^SYNOPSIS\$'
+endif
+
 command! -bang -complete=customlist,neoman#Complete -nargs=* Nman call
       \ neoman#get_page(<bang>0, 'edit', <f-args>)
 command! -bang -complete=customlist,neoman#Complete -nargs=* Snman call
