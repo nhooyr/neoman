@@ -1,6 +1,5 @@
 " Ensure Vim is not recursively invoked (man-db does this)
-" when doing ctrl-] on a man page reference. More info here
-" http://comments.gmane.org/gmane.editors.vim.devel/29085
+" More info here http://comments.gmane.org/gmane.editors.vim.devel/29085
 let s:man_cmd = 'unset MANPAGER; man 2>/dev/null '
 " regex for valid extensions that manpages can have
 let s:man_extensions = '[glx]z\|bz2\|lzma\|Z'
@@ -18,7 +17,7 @@ catch /E145:/
 endtry
 
 function! neoman#get_page(bang, editcmd, ...) abort
-  " fpage is a string like 'printf(2)' or just 'prinf'
+  " fpage is a string like 'printf(2)' or just 'printf'
   if a:0 == 0
     let fpage = expand('<cWORD>')
     if empty(fpage)
