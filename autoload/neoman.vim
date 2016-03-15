@@ -1,8 +1,16 @@
-let s:man_tag_depth = 0
+" Ensure Vim is not recursively invoked (man-db does this)
+" by removing MANPAGER from the environment
+" More info here http://comments.gmane.org/gmane.editors.vim.devel/29085
+if &shell =~# 'fish$'
+  let s:man_cmd = 'set -e MANPAGER; man ^/dev/null'
+else
+  let s:man_cmd = 'unset MANPAGER; man 2>/dev/null '
+endif
+" regex for valid extensions that manpages can have
+let s:man_extensions = '[glx]z\|bz2\|lzma\|Z'
 let s:man_sect_arg = ''
 let s:man_find_arg = '-w'
-let s:man_cmd = 'man 2>/dev/null'
-let s:man_extensions = '[glx]z\|bz2\|lzma\|Z'
+let s:man_tag_stack = []
 
 try
   if !has('win32') && $OSTYPE !~? 'cygwin\|linux' && system('uname -s') =~? 'SunOS' && system('uname -r') =~? '^5'
@@ -13,160 +21,217 @@ catch /E145:/
   " Ignore the error in restricted mode
 endtry
 
-
-function neoman#get_page(bang, editcmd, args) abort
-  if len(a:args) > 2
-    redraws! | echon "neoman: " | echohl ErrorMsg | echon "too many arguments" | echohl None
-    return
-  elseif empty(a:args)
-    let [sect, page] = ['', expand('<cword>')]
-    if empty(page)
-      redraws! | echon "neoman: " | echohl ErrorMsg | echon "no identifier under cursor" | echohl None
+function! neoman#get_page(bang, editcmd, ...) abort
+  " fpage is a string like 'printf(2)' or just 'printf'
+  if a:0 == 0
+    let fpage = expand('<cWORD>')
+    if empty(fpage)
+      call s:error("no WORD under cursor")
       return
     endif
-  elseif len(a:args) == 1
-    let [sect, page] = ['', a:args[0]]
-  elseif len(a:args) == 2
-    let [sect, page] = a:args
-  endif
-
-  let [sect, page] = s:parse_page_and_section(sect, page)
-  let where = s:find_page(sect, page)
-  if where !~# '^\/'
-    redraws! | echon "neoman: " | echohl ErrorMsg | echon "no manual entry for " . page | echohl None
+  elseif a:0 > 2
+    call s:error('too many arguments')
     return
+  elseif a:0 == 1
+    " only page
+    let fpage = a:000[0]
+  else
+    " page and sect
+    let fpage = a:000[1].'('.a:000[0].')'
   endif
 
-  if empty(sect)
-    let sect = fnamemodify(system(where), ":t")
-    if fnamemodify(sect, ":e") =~# '\%('.s:man_extensions.'\)\n'
-      let sect = fnamemodify(sect, ":r")
+  " if fpage is a path, no need to parse anything
+  if fpage =~# '\/'
+    let page = fpage
+    let sect = ''
+  else
+    let [page, sect] = s:parse_page_and_section(fpage)
+    if empty(page)
+      call s:error('invalid manpage name '.fpage)
+      return
     endif
-    let sect = substitute(sect, '^[a-zA-Z_:.0-9-]\+\.\(\w\+\).*', '\1', '')
+    let path = s:find_page(sect, page)
+    if empty(path)
+      call s:error("no manual entry for ".fpage)
+      return
+    elseif empty(sect)
+      let sect = s:parse_sect(path[0])
+    endif
   endif
 
-  exec 'let s:man_tag_buf_'.s:man_tag_depth.' = '.bufnr('%')
-  exec 'let s:man_tag_lin_'.s:man_tag_depth.' = '.line('.')
-  exec 'let s:man_tag_col_'.s:man_tag_depth.' = '.col('.')
-  let s:man_tag_depth = s:man_tag_depth + 1
+  call s:push_tag_stack()
 
-  let editcmd = a:editcmd
-  if g:find_neoman_window == !a:bang
-    if &filetype !=# 'neoman'
-      let thiswin = winnr()
-      wincmd b
-      if winnr() > 1
-        exe "norm! " . thiswin . "<C-W>w"
-        while 1
-          if &filetype == 'neoman'
-            let editcmd = "edit"
-            break
-          endif
-          wincmd w
-          if thiswin == winnr()
-            break
-          endif
-        endwhile
+  if g:neoman_find_window != a:bang && &filetype !=# 'neoman'
+    let cmd = s:find_neoman(a:editcmd)
+  else
+    let cmd = a:editcmd
+  endif
+
+  call s:read_page(sect, page, cmd)
+endfunction
+
+" move to previous position in the stack
+function! neoman#pop_tag_stack() abort
+  if !empty(s:man_tag_stack)
+    execute s:man_tag_stack[-1]['buf'].'b'
+    execute s:man_tag_stack[-1]['lin']
+    execute 'normal! '.s:man_tag_stack[-1]['col'].'|'
+    call remove(s:man_tag_stack, -1)
+  endif
+endfunction
+
+" save current position
+function! s:push_tag_stack() abort
+  let s:man_tag_stack = add(s:man_tag_stack, {
+        \ 'buf': bufnr('%'),
+        \ 'lin': line('.'),
+        \ 'col': col('.')
+        \ })
+endfunction
+
+" find the closest neoman window above/left
+function! s:find_neoman(cmd) abort
+  if winnr('$') > 1
+    let thiswin = winnr()
+    while 1
+      if &filetype ==# 'neoman'
+        return 'edit'
       endif
-    endif
+      wincmd w
+      if thiswin == winnr() | break | endif
+    endwhile
   endif
+  return a:cmd
+endfunction
 
-  silent exec editcmd . ' man://'.page.'('.sect.')'
+" parses the sect/page out of 'page(sect)'
+function! s:parse_page_and_section(fpage) abort
+  let ret = split(a:fpage, '(')
+  if len(ret) == 2 && ret[1] =~# '^\f\+)\f*$'
+    let iret = split(ret[1], ')')
+    return [ret[0], iret[0]]
+  elseif len(ret) == 1
+    return [ret[0], '']
+  else
+    return ['', '']
+  endif
+endfunction
+
+" returns the path of a manpage
+function! s:find_page(sect, page) abort
+  return split(system(s:man_cmd.s:man_find_arg.' '.s:cmd_args(a:sect, a:page)), '\n')
+endfunction
+
+" parses the section out of the path to a manpage
+function! s:parse_sect(path) abort
+  let tail = fnamemodify(a:path, ':t')
+  if fnamemodify(tail, ":e") =~# '\%('.s:man_extensions.'\)\n'
+    let tail = fnamemodify(tail, ':r')
+  endif
+  return substitute(tail, '\f\+\.\([^.]\+\)', '\1', '')
+endfunction
+
+function! s:read_page(sect, page, cmd)
+  silent execute a:cmd 'man://'.a:page.(empty(a:sect)?'':'('.a:sect.')')
   setlocal modifiable
-  silent keepjumps norm! 1G"_dG
+  " remove all the text, incase we already loaded the manpage before
+  silent keepjumps %delete _
   let $MANWIDTH = winwidth(0)-1
-  silent exec 'r!'.s:man_cmd.' '.s:cmd(sect, page).' | col -b'
-  " Remove blank lines from top and bottom.
-  while getline(1) =~ '^\s*$'
-    silent keepjumps norm! gg"_dd
+  " read manpage into buffer
+  silent execute 'r!'.s:man_cmd.s:cmd_args(a:sect, a:page)
+  " remove all those backspaces
+  execute "silent! keepjumps %substitute,.\b,,g"
+  " remove blank lines from top and bottom.
+  while getline(1) =~# '^\s*$'
+    silent keepjumps 1delete _
   endwhile
-  while getline('$') =~ '^\s*$'
-    silent keepjumps norm! G"_dd
+  while getline('$') =~# '^\s*$'
+    silent keepjumps $delete _
   endwhile
+  keepjumps 1
   setlocal filetype=neoman
-  return
 endfunction
 
-function neoman#pop_page() abort
-  if s:man_tag_depth > 1
-    let s:man_tag_depth = s:man_tag_depth - 1
-    exec "let s:man_tag_buf=s:man_tag_buf_".s:man_tag_depth
-    exec "let s:man_tag_lin=s:man_tag_lin_".s:man_tag_depth
-    exec "let s:man_tag_col=s:man_tag_col_".s:man_tag_depth
-    exec s:man_tag_buf."b"
-    exec s:man_tag_lin
-    exec "norm! ".s:man_tag_col."|"
-    exec "unlet s:man_tag_buf_".s:man_tag_depth
-    exec "unlet s:man_tag_lin_".s:man_tag_depth
-    exec "unlet s:man_tag_col_".s:man_tag_depth
-    unlet s:man_tag_buf s:man_tag_lin s:man_tag_col
-  endif
-endfunction
-
-" Expects a string like 'access' or 'access(2)'.
-function s:parse_page_and_section(sect, str) abort
-  try
-    let page = substitute(a:str, '\*\?\([a-zA-Z_:.0-9-]\+\).*', '\1', '')
-    if page =~# '\.$'
-      let page = strpart(page, 0, len(page)-1)
-      return [page, a:sect]
-    endif
-    let sect = substitute(a:str, '\*\?[a-zA-Z_:.0-9-]\+(\([^()]*\)).*', '\1', '')
-    if sect ==# page
-      let sect = a:sect
-    endif
-  catch
-    redraws! | echon "neoman: " | echohl ErrorMsg | echon "failed to parse ".a:str.'"' | echohl None
-  endtry
-  return [sect, page]
-endfunction
-
-function s:cmd(sect, page) abort
+function s:cmd_args(sect, page) abort
   if !empty(a:sect)
     return s:man_sect_arg.' '.a:sect.' '.a:page
   endif
   return a:page
 endfunction
 
-function s:find_page(sect, page) abort
-  return system(s:man_cmd.' '.s:man_find_arg.' '.s:cmd(a:sect, a:page))
+function! s:error(msg) abort
+  redrawstatus!
+  echon "neoman: "
+  echohl ErrorMsg
+  echon a:msg
+  echohl None
 endfunction
 
 function! neoman#Complete(ArgLead, CmdLine, CursorPos) abort
   let args = split(a:CmdLine)
-  let len = len(args)
-  if len == 1
-    let page = ""
-    let sect = ""
-  elseif len == 2
+  let l = len(args)
+  " if the cursor (|) is at ':Nman printf(|' then
+  " make sure to display the section. See s:get_candidates
+  let fpage = 0
+  " if already completed a manpage, we return
+  if (l > 1 && args[1] =~# ')\f*$') || l > 3 || a:ArgLead =~# ')$'
+    return
+  elseif l == 3
+    " cursor (|) is at ':Nman 3 printf |'
+    if empty(a:ArgLead)
+      return
+    endif
+    let sect = args[1]
+    let page = args[2]
+  elseif l == 2
+    " cursor (|) is at ':Nman 3 |'
     if empty(a:ArgLead)
       let page = ""
       let sect = args[1]
+    elseif a:ArgLead =~# '^\f\+(\f*$'
+      " cursor (|) is at ':Nman printf(|'
+      let tmp = split(a:ArgLead, '(')
+      let page = tmp[0]
+      let sect = substitute(get(tmp, 1, '*'), ')$', '', '').'*'
+      let fpage = 1
     else
-      if a:ArgLead =~# '[^(]('
-        let tmp = split(a:ArgLead, '(')
-        let page = tmp[0]
-        if len(tmp) == 1
-          let sect = ""
-        else
-          let sect = substitute(tmp[1], ')', '', '')
-        endif
-      else
-        let page = args[1]
-        let sect = ""
-      endif
+      " cursor (|) is at ':Nman printf
+      let page = args[1]
+      let sect = '*'
     endif
   else
-    let page = args[2]
-    let sect = args[1]
+    let page = ''
+    let sect = '*'
   endif
-  let mandirs_list = split(system(s:man_cmd.' '.s:man_find_arg), ':\|\n')
-  let mandirs_list = filter(mandirs_list, 'index(mandirs_list, v:val, v:key+1)==-1')
-  let mandirs = join(mandirs_list, ',')
-  let candidates = globpath(mandirs, "*/" . page . "*." . sect . '*', 0, 1)
-  for i in range(len(candidates))
-    let candidates[i] = substitute((fnamemodify(candidates[i], ":t")),
-          \ '\(.\+\)\.\%('.s:man_extensions.'\)\@!\([^.]\+\).*', '\1(\2)', "")
-  endfor
+  return s:get_candidates(page, sect, fpage)
+endfunction
+
+function! s:get_candidates(page, sect, fpage) abort
+  let mandirs = s:MANDIRS()
+  let candidates = globpath(mandirs, "*/" . a:page . "*." . a:sect, 0, 1)
+  let find = '\(.\+\)\.\%('.s:man_extensions.'\)\@!\'
+  " if the page is a path, complete files
+  if a:sect ==# '*' && a:page =~# '\/'
+    "TODO why does this complete the last one automatically
+    let candidates = glob(a:page.'*', 0, 1)
+  else
+    " if the section is not empty and the cursor (|) is not at
+    " ':Nman printf(|' then do not show sections.
+    if a:sect != '*' && !a:fpage
+      let find .= '%([^.]\+\).*'
+      let repl = '\1'
+    else
+      let find .= '([^.]\+\).*'
+      let repl = '\1(\2)'
+    endif
+    call map(candidates, 'substitute((fnamemodify(v:val, ":t")), find, repl, "")')
+  endif
   return candidates
+endfunction
+
+function! s:MANDIRS() abort
+  " gets list of MANDIRS
+  let mandirs_list = split(system(s:man_cmd.s:man_find_arg), ':\|\n')
+  " removes duplicates and then joins by comma
+  return join(filter(mandirs_list, 'index(mandirs_list, v:val, v:key+1)==-1'), ',')
 endfunction
