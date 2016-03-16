@@ -173,50 +173,50 @@ function! neoman#Complete(ArgLead, CmdLine, CursorPos) abort
   " make sure to display the section. See s:get_candidates
   let fpage = 0
   " if already completed a manpage, we return
-  if (l > 1 && args[1] =~# ')\f*$') || l > 3 || a:ArgLead =~# ')$'
+  if (l > 1 && args[1] =~# ')\f*$') || l > 3
     return
   elseif l == 3
-    " cursor (|) is at ':Nman 3 printf |'
-    if empty(a:ArgLead)
+    " cursor (|) is at ':Nman 3 printf |', or ':Nman 3 printf(|'
+    if empty(a:ArgLead) || a:ArgLead =~# ')\|('
       return
     endif
     let sect = args[1]
-    let page = args[2]
+    let page = a:ArgLead
   elseif l == 2
     " cursor (|) is at ':Nman 3 |'
     if empty(a:ArgLead)
-      let page = ""
+      let page = ''
       let sect = args[1]
     elseif a:ArgLead =~# '^\f\+(\f*$'
       " cursor (|) is at ':Nman printf(|'
       let tmp = split(a:ArgLead, '(')
       let page = tmp[0]
-      let sect = substitute(get(tmp, 1, '*'), ')$', '', '').'*'
+      let sect = substitute(get(tmp, 1, ''), ')$', '', '')
       let fpage = 1
     else
-      " cursor (|) is at ':Nman printf
-      let page = args[1]
-      let sect = '*'
+      " cursor (|) is at ':Nman printf|'
+      let page = a:ArgLead
+      let sect = ''
     endif
   else
     let page = ''
-    let sect = '*'
+    let sect = ''
   endif
   return s:get_candidates(page, sect, fpage)
 endfunction
 
 function! s:get_candidates(page, sect, fpage) abort
   let mandirs = s:MANDIRS()
-  let candidates = globpath(mandirs, "*/" . a:page . "*." . a:sect, 0, 1)
+  let candidates = globpath(mandirs,'*/'.a:page.'*.'.a:sect.'*', 0, 1)
   let find = '\(.\+\)\.\%('.s:man_extensions.'\)\@!\'
   " if the page is a path, complete files
-  if a:sect ==# '*' && a:page =~# '\/'
+  if empty(a:sect) && a:page =~# '\/'
     "TODO why does this complete the last one automatically
     let candidates = glob(a:page.'*', 0, 1)
   else
     " if the section is not empty and the cursor (|) is not at
     " ':Nman printf(|' then do not show sections.
-    if a:sect != '*' && !a:fpage
+    if !empty(a:sect) && !a:fpage
       let find .= '%([^.]\+\).*'
       let repl = '\1'
     else
