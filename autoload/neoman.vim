@@ -54,7 +54,7 @@ function! neoman#get_page(bang, editcmd, ...) abort
     if empty(path)
       call s:error("no manual entry for ".fpage)
       return
-    elseif empty(sect)
+    else
       let sect = s:parse_sect(path[0])
     endif
   endif
