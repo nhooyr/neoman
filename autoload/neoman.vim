@@ -31,9 +31,10 @@ function! neoman#get_page(bang, editcmd, ...) abort
     let page = a:000[1]
   else
     " fpage is a string like 'printf(2)' or just 'printf'
+    " if no argument, use the word under the cursor
     let fpage = get(a:000, 0, expand('<cWORD>'))
     if empty(fpage)
-      call s:error("no WORD under cursor")
+      call s:error('no WORD under cursor')
       return
     endif
     let [page, sect] = s:parse_page_and_section(fpage)
@@ -45,9 +46,9 @@ function! neoman#get_page(bang, editcmd, ...) abort
 
   let path = s:find_page(sect, page)
   if empty(path)
-    call s:error("no manual entry for ".page.(empty(sect)?'':'('.sect.')'))
+    call s:error('no manual entry for '.page.(empty(sect)?'':'('.sect.')'))
     return
-  elseif page !~# '\/'
+  elseif page !~# '\/' " if page is not a path, find the default section
     let sect = s:parse_sect(path[0])
   endif
 
@@ -71,7 +72,7 @@ function! neoman#pop_tag() abort
   endif
 endfunction
 
-" save current position
+" save current position in the stack
 function! s:push_tag() abort
   let s:tag_stack += [{
         \ 'buf':  bufnr('%'),
@@ -116,7 +117,7 @@ endfunction
 " parses the section out of the path to a manpage
 function! s:parse_sect(path) abort
   let tail = fnamemodify(a:path, ':t')
-  if fnamemodify(tail, ":e") =~# '\%('.s:man_extensions.'\)\n'
+  if fnamemodify(tail, ':e') =~# '\%('.s:man_extensions.'\)\n'
     let tail = fnamemodify(tail, ':r')
   endif
   return substitute(tail, '\f\+\.\([^.]\+\)', '\1', '')
@@ -152,7 +153,7 @@ endfunction
 
 function! s:error(msg) abort
   redrawstatus!
-  echon "neoman.vim: "
+  echon 'neoman.vim: '
   echohl ErrorMsg
   echon a:msg
   echohl None
