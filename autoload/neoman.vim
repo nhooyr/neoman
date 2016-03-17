@@ -45,12 +45,8 @@ function! neoman#get_page(bang, editcmd, ...) abort
 
   let path = s:find_page(sect, page)
   if empty(path)
-    let path = s:find_page('', page)
-    if empty(path)
-      call s:error("no manual entry for ".page.(empty(sect)?'':'('.sect.')'))
-      return
-    endif
-    let sect = s:parse_sect(path[0])
+    call s:error("no manual entry for ".page.(empty(sect)?'':'('.sect.')'))
+    return
   elseif page !~# '\/'
     let sect = s:parse_sect(path[0])
   endif
