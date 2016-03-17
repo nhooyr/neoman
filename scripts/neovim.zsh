@@ -8,7 +8,7 @@ function _nman {
 	fi
 	local l=$#
 	local -a page
-	local page=(${@:1:$l-1})
+	page=(${@:1:$l-1})
 	local tmp=$IFS
 	IFS=$'\n' out=($(command man -w ${page[@]} 2>&1))
 	local code=$?
