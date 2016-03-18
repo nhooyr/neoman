@@ -117,7 +117,7 @@ endfunction
 " parses the section out of the path to a manpage
 function! s:parse_sect(path) abort
   let tail = fnamemodify(a:path, ':t')
-  if fnamemodify(tail, ':e') =~# '\%('.s:man_extensions.'\)'
+  if fnamemodify(tail, ':e') =~# s:man_extensions
     let tail = fnamemodify(tail, ':r')
   endif
   return substitute(tail, '\f\+\.\([^.]\+\)', '\1', '')
