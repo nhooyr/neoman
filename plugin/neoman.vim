@@ -3,9 +3,8 @@ if exists('g:loaded_neoman')
 endif
 let g:loaded_neoman = 1
 
-if !exists('g:neoman_find_window')
-  let g:neoman_find_window = 1
-endif
+let g:neoman_find_window =
+      \ get( g:, 'neoman_find_window', 1 )
 
 command! -bang -complete=customlist,neoman#Complete -nargs=* Nman call
       \ neoman#get_page(<bang>0, 'edit', <f-args>)
