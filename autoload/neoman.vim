@@ -49,7 +49,7 @@ function! neoman#get_page(bang, editcmd, ...) abort
     call s:error('no manual entry for '.page.(empty(sect)?'':'('.sect.')'))
     return
   elseif page !~# '\/' " if page is not a path, find the default section
-    let sect = s:parse_sect(path[0])
+    let sect = s:parse_sect(path)
   endif
 
   call s:push_tag()
@@ -111,13 +111,13 @@ endfunction
 
 " returns the path of a manpage
 function! s:find_page(sect, page) abort
-  return systemlist(s:man_cmd.s:man_find_arg.' '.s:man_args(a:sect, a:page))
+  return system(s:man_cmd.s:man_find_arg.' '.s:man_args(a:sect, a:page))
 endfunction
 
 " parses the section out of the path to a manpage
 function! s:parse_sect(path) abort
   let tail = fnamemodify(a:path, ':t')
-  if fnamemodify(tail, ':e') =~# '\%('.s:man_extensions.'\)'
+  if fnamemodify(tail, ':e') =~# '^\%('.s:man_extensions.'\)\n$'
     let tail = fnamemodify(tail, ':r')
   endif
   return substitute(tail, '\f\+\.\([^.]\+\)', '\1', '')
