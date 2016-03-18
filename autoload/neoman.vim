@@ -111,13 +111,13 @@ endfunction
 
 " returns the path of a manpage
 function! s:find_page(sect, page) abort
-  return split(system(s:man_cmd.s:man_find_arg.' '.s:man_args(a:sect, a:page)), '\n')
+  return systemlist(s:man_cmd.s:man_find_arg.' '.s:man_args(a:sect, a:page))
 endfunction
 
 " parses the section out of the path to a manpage
 function! s:parse_sect(path) abort
   let tail = fnamemodify(a:path, ':t')
-  if fnamemodify(tail, ':e') =~# '\%('.s:man_extensions.'\)\n'
+  if fnamemodify(tail, ':e') =~# '\%('.s:man_extensions.'\)'
     let tail = fnamemodify(tail, ':r')
   endif
   return substitute(tail, '\f\+\.\([^.]\+\)', '\1', '')
@@ -146,7 +146,7 @@ endfunction
 
 function s:man_args(sect, page) abort
   if !empty(a:sect)
-    return s:man_sect_arg.' '.shellescape(a:sect).' '.shellescape(a:page)
+    return s:man_sect_arg.' '.shellescape(a:sect.' '.a:page)
   endif
   return shellescape(a:page)
 endfunction
