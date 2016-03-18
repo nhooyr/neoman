@@ -146,7 +146,7 @@ endfunction
 
 function s:man_args(sect, page) abort
   if !empty(a:sect)
-    return s:man_sect_arg.' '.shellescape(a:sect.' '.a:page)
+    return s:man_sect_arg.' '.shellescape(a:sect).' '.shellescape(a:page)
   endif
   return shellescape(a:page)
 endfunction
