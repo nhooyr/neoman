@@ -34,8 +34,10 @@ Plug 'nhooyr/neoman.vim' "vim-plug
 The command is as follows:
 
 ```vim
+Nman[!] " display man page for <cWORD>
 Nman[!] [sect] page
 Nman[!] page[(sect)]
+Nman[!] path " if in current directory, start path with ./
 ```
 
 Several ways to use it, probably easier to explain with a few examples.
@@ -44,6 +46,7 @@ Several ways to use it, probably easier to explain with a few examples.
 :Nman printf
 :Nman 3 printf
 :Nman printf(3)
+:Nman ./fzf.1 " open manpage in current directory
 ```
 
 Nman without any arguments will use the `WORD` (it strips anything after ')') under the cursor as the page.
