@@ -4,13 +4,6 @@ Read manpages faster than superman!
 
 ![neoman in action](https://media.giphy.com/media/xT0BKrEeXPeKVMgb84/giphy.gif)
 
-## ATTENTION
-I just renamed the command to `:Nman`, if you were using it before, just edit any mappings or the functions in your `.zshrc`/`.bashrc`.
-
-I've also changed `g:neoman_current_window` to `g:neoman_find_window`.
-
-Instead of using `keywordprg` you should use the new `K` mapping described under [mappings](#mappings)
-
 ## Features
 - Smart manpage autocompletion
 - Open in a split/vsplit/tabe/current window
