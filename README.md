@@ -66,8 +66,6 @@ Here is a global `K` mapping to take you to the manpage under the cursor.
 nnoremap <silent> K :Nman<CR>
 ```
 
-This is preferred to setting `keywordprg` because `keywordprg` uses `iskeyword` and most filetypes don't have `(,)` in `iskeyword` which means `printf(3)` will take you to `printf(1)`.   The mapping fixes this by using `<cWORD>`.
-
 Here is a custom mapping for a vertical split man page with the word under the cursor.
 
 ```vim
@@ -81,6 +79,10 @@ nnoremap <leader>mv :Vnman<Space>
 ```
 
 ### Command line integration
+You will need [nvr](https://github.com/mhinz/neovim-remote) for the super cool neovim terminal integration.
+
+Use `nman`/`nman!` to open the manpages. `nman!` works the same way as `:Nman!`, but obviously its only available for neovim. You have to be connected remotely in order to find the neoman window, otherwise it doesn't matter, see `g:neoman_find_window`.
+
 #### zsh/bash
 Add one to your `.zshrc`/`.bashrc`
 ```zsh
@@ -94,12 +96,6 @@ Add one to your `config.fish`
 source /somepath/neoman.vim/scripts/neovim.fish #if neovim
 source /somepath/neoman.vim/scripts/vim.fish    #if vim
 ```
-
-You will need [nvr](https://github.com/mhinz/neovim-remote) for the super cool neovim terminal integration.
-
-Use `nman`/`nman!` to open the manpages. `nman!` works the same way as `:Nman!`, but obviously its only available for neovim. You have to be connected remotely in order to find the neoman window, otherwise it doesn't matter, see `g:neoman_find_window`.
-
-I've really only tested this with zsh, if you have any problems with `bash`/`fish`, please open a issue!
 
 ### Settings
 `g:neoman_find_window`  
