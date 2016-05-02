@@ -27,7 +27,7 @@ function! neoman#get_page(bang, editcmd, ...) abort
     call s:error('too many arguments')
     return
   elseif a:0 == 2
-    let sect = a:000[0]
+    let sect = tolower(a:000[0])
     let page = a:000[1]
   else
     " fpage is a string like 'printf(2)' or just 'printf'
@@ -43,7 +43,6 @@ function! neoman#get_page(bang, editcmd, ...) abort
       return
     endif
   endif
-
   let path = s:find_page(sect, page)
   if empty(path)
     call s:error('no manual entry for '.page.(empty(sect)?'':'('.sect.')'))
@@ -101,7 +100,7 @@ function! s:parse_page_and_section(fpage) abort
   let ret = split(a:fpage, '(')
   if len(ret) == 2 && ret[1] =~# '^\f\+)\f*$'
     let iret = split(ret[1], ')')
-    return [ret[0], iret[0]]
+    return [ret[0], tolower(iret[0])]
   elseif len(ret) == 1
     return [ret[0], '']
   else
@@ -146,7 +145,7 @@ endfunction
 
 function s:man_args(sect, page) abort
   if !empty(a:sect)
-    return s:man_sect_arg.' '.shellescape(tolower(a:sect)).' '.shellescape(a:page)
+    return s:man_sect_arg.' '.shellescape(a:sect).' '.shellescape(a:page)
   endif
   return shellescape(a:page)
 endfunction
