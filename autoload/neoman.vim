@@ -43,6 +43,7 @@ function! neoman#get_page(bang, editcmd, ...) abort
       return
     endif
   endif
+
   let path = s:find_page(sect, page)
   if empty(path)
     call s:error('no manual entry for '.page.(empty(sect)?'':'('.sect.')'))
