@@ -173,18 +173,18 @@ function! neoman#Complete(ArgLead, CmdLine, CursorPos) abort
     if empty(a:ArgLead)
       return
     endif
-    let sect = args[1]
+    let sect = tolower(args[1])
     let page = a:ArgLead
   elseif l == 2
     " cursor (|) is at ':Nman 3 |'
     if empty(a:ArgLead)
       let page = ''
-      let sect = args[1]
+      let sect = tolower(args[1])
     elseif a:ArgLead =~# '^\f\+(\f*$'
       " cursor (|) is at ':Nman printf(|'
       let tmp = split(a:ArgLead, '(')
       let page = tmp[0]
-      let sect = substitute(get(tmp, 1, ''), ')$', '', '')
+      let sect = tolower(substitute(get(tmp, 1, ''), ')$', '', ''))
       let fpage = 1
     else
       " cursor (|) is at ':Nman printf|'
