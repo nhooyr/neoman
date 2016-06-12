@@ -102,6 +102,9 @@ source /somepath/neoman.vim/scripts/vim.fish    #if vim
 If this option is set, neoman will first attempt to find the current neoman window before opening a new one. The bang on `:Nman` will alternate on this behavior. So if this option is set, the bang will make it act like as if it is not set, and vice versa.  
 By default this is set.
 
+`g:neoman_tab_after`  
+If set, `:Tnman` will open a tab just after the current one, instead of just before.
+
 `g:no_neoman_maps`  
 If set, no mappings are made in neoman buffers. By default it is not set.
 
