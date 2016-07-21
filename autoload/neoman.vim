@@ -1,12 +1,13 @@
 " Ensure Vim is not recursively invoked (man-db does this)
 " by removing MANPAGER from the environment
 " More info here http://comments.gmane.org/gmane.editors.vim.devel/29085
-" TODO when unlet $FOO is implemented, move this back to ftplugin/man.vim
+" TODO when unlet $FOO is implemented, move this back to ftplugin/neoman.vim
 if &shell =~# 'fish$'
-  let s:man_cmd = 'set -e MANPAGER; man ^/dev/null'
+  let s:man_cmd = 'env -u MANPAGER man ^/dev/null '
 else
-  let s:man_cmd = 'unset MANPAGER; man 2>/dev/null '
+  let s:man_cmd = 'env -u MANPAGER man 2>/dev/null '
 endif
+
 " regex for valid extensions that manpages can have
 let s:man_extensions = '[glx]z\|bz2\|lzma\|Z'
 let s:man_sect_arg = ''
@@ -45,7 +46,7 @@ function! neoman#get_page(bang, editcmd, ...) abort
   endif
 
   let path = s:find_page(sect, page)
-  if empty(path)
+  if empty(path) || path[0] == ''
     call s:error('no manual entry for '.page.(empty(sect)?'':'('.sect.')'))
     return
   elseif page !~# '\/' " if page is not a path, find the default section
@@ -99,8 +100,11 @@ endfunction
 " parses the sect/page out of 'page(sect)'
 function! s:parse_page_and_section(fpage) abort
   let ret = split(a:fpage, '(')
-  if len(ret) == 2 && ret[1] =~# '^\f\+)\f*$'
+  if len(ret) == 2
     let iret = split(ret[1], ')')
+    if len(iret) == 0
+      return ['','']
+    endif
     return [ret[0], tolower(iret[0])]
   elseif len(ret) == 1
     return [ret[0], '']
