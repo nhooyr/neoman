@@ -38,7 +38,7 @@ function! neoman#get_page(bang, editcmd, ...) abort
       call s:error('no WORD under cursor')
       return
     endif
-    let [page, sect] = s:parse_page_and_section(fpage)
+    let [page, sect] = s:parse_page_and_sect_fpage(fpage)
     if empty(page)
       call s:error('invalid manpage name '.fpage)
       return
@@ -50,8 +50,7 @@ function! neoman#get_page(bang, editcmd, ...) abort
     call s:error('no manual entry for '.page.(empty(sect)?'':'('.sect.')'))
     return
   elseif page !~# '\/' " if page is not a path, parse the page and section from the path
-    let sect = s:parse_sect(path[0])
-    let page = s:parse_page(path[0])
+    let [page, sect] = s:parse_page_and_sect_path(path[0])
   endif
 
   call s:push_tag()
@@ -98,8 +97,8 @@ function! s:find_neoman(cmd) abort
   return a:cmd
 endfunction
 
-" parses the sect/page out of 'page(sect)'
-function! s:parse_page_and_section(fpage) abort
+" parses the page and sect out of 'page(sect)'
+function! s:parse_page_and_sect_fpage(fpage) abort
   let ret = split(a:fpage, '(')
   if len(ret) == 2
     let iret = split(ret[1], ')')
@@ -119,18 +118,14 @@ function! s:find_page(sect, page) abort
   return systemlist(s:man_cmd.s:man_find_arg.' '.s:man_args(a:sect, a:page))
 endfunction
 
-" parses the section out of the path to a manpage
-function! s:parse_sect(path) abort
+" parses the page and sect out of 'path/page.sect'
+function! s:parse_page_and_sect_path(path) abort
   let tail = fnamemodify(a:path, ':t')
+  let page = substitute(tail, '^\(\f\+\)\..\+$', '\1', '')
   if fnamemodify(tail, ':e') =~# s:man_extensions
     let tail = fnamemodify(tail, ':r')
   endif
-  return substitute(tail, '^\f\+\.\(.\+\)$', '\1', '')
-endfunction
-
-" parses the page out of the path to a manpage
-function! s:parse_page(path) abort
-  return substitute(fnamemodify(a:path, ':t'), '^\(\f\+\)\..\+$', '\1', '')
+  return [page, substitute(tail, '^\f\+\.\(.\+\)$', '\1', '')]
 endfunction
 
 function! s:read_page(sect, page, cmd)
