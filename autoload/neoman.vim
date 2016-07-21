@@ -113,19 +113,20 @@ function! s:parse_page_and_sect_fpage(fpage) abort
   endif
 endfunction
 
-" returns the path of a manpage
-function! s:find_page(sect, page) abort
-  return systemlist(s:man_cmd.s:man_find_arg.' '.s:man_args(a:sect, a:page))
-endfunction
-
 " parses the page and sect out of 'path/page.sect'
 function! s:parse_page_and_sect_path(path) abort
   let tail = fnamemodify(a:path, ':t')
-  let page = substitute(tail, '^\(\f\+\)\..\+$', '\1', '')
   if fnamemodify(tail, ':e') =~# s:man_extensions
     let tail = fnamemodify(tail, ':r')
   endif
-  return [page, substitute(tail, '^\f\+\.\(.\+\)$', '\1', '')]
+  let page = substitute(tail, '^\(\f\+\)\..\+$', '\1', '')
+  let sect = substitute(tail, '^\f\+\.\(.\+\)$', '\1', '')
+  return [page, sect]
+endfunction
+
+" returns the path of a manpage
+function! s:find_page(sect, page) abort
+  return systemlist(s:man_cmd.s:man_find_arg.' '.s:man_args(a:sect, a:page))
 endfunction
 
 function! s:read_page(sect, page, cmd)
