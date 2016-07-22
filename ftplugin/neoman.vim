@@ -3,6 +3,10 @@ if exists('b:did_ftplugin')
 endif
 let b:did_ftplugin = 1
 
+if expand('%') !~# '^man:\/\/'
+  file 'man://'.tolower(substitute(getline(1), '^\(\S\+\).*$', '\1', 0))
+endif
+
 " remove all those backspaces
 execute "silent! keepjumps %substitute,.\b,,g"
 " remove blank lines from top and bottom.
