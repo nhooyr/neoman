@@ -137,16 +137,6 @@ function! s:read_page(sect, page, cmd)
   let $MANWIDTH = winwidth(0)-1
   " read manpage into buffer
   silent execute 'r!'.s:man_cmd.s:man_args(a:sect, a:page)
-  " remove all those backspaces
-  execute "silent! keepjumps %substitute,.\b,,g"
-  " remove blank lines from top and bottom.
-  while getline(1) =~# '^\s*$'
-    silent keepjumps 1delete _
-  endwhile
-  while getline('$') =~# '^\s*$'
-    silent keepjumps $delete _
-  endwhile
-  keepjumps 1
   setlocal filetype=neoman
 endfunction
 

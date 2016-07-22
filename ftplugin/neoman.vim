@@ -3,6 +3,17 @@ if exists('b:did_ftplugin')
 endif
 let b:did_ftplugin = 1
 
+" remove all those backspaces
+execute "silent! keepjumps %substitute,.\b,,g"
+" remove blank lines from top and bottom.
+while getline(1) =~# '^\s*$'
+  silent keepjumps 1delete _
+endwhile
+while getline('$') =~# '^\s*$'
+  silent keepjumps $delete _
+endwhile
+keepjumps 1
+
 setlocal buftype=nofile
 setlocal noswapfile
 setlocal nofoldenable
