@@ -124,3 +124,8 @@ TODO:
 - [ ] Vim docs
 - [x] Rewrite for clean code, check PR #15 to test it!
 - [x] Update fish script
+- [ ] document plug mappings
+- [ ] remove bang
+- [ ] add count feature (count is the section)
+- [ ] fix autocomplete bug with vim/neovim
+- [ ] merge with neovim!!!
