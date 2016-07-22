@@ -1,11 +1,10 @@
 " Ensure Vim is not recursively invoked (man-db does this)
 " by removing MANPAGER from the environment
 " More info here http://comments.gmane.org/gmane.editors.vim.devel/29085
-" TODO when unlet $FOO is implemented, move this back to ftplugin/neoman.vim
 if &shell =~# 'fish$'
-  let s:man_cmd = 'env -u MANPAGER man ^/dev/null '
+  let s:man_cmd = 'man -P cat ^/dev/null '
 else
-  let s:man_cmd = 'env -u MANPAGER man 2>/dev/null '
+  let s:man_cmd = 'man -P cat 2>/dev/null '
 endif
 
 " regex for valid extensions that manpages can have
@@ -23,7 +22,7 @@ catch /E145:/
   " Ignore the error in restricted mode
 endtry
 
-function! neoman#get_page(editcmd, ...) abort
+function! neoman#get_page(count, editcmd, ...) abort
   if a:0 > 2
     call s:error('too many arguments')
     return
@@ -42,15 +41,19 @@ function! neoman#get_page(editcmd, ...) abort
     if empty(page)
       call s:error('invalid manpage name '.fpage)
       return
+    elseif empty(sect) && a:count != 0
+      let sect = string(a:count)
     endif
   endif
 
-  let path = s:find_page(sect, page)
-  if empty(path) || path[0] == ''
+  let out = systemlist(s:man_cmd.s:man_find_arg.' '.s:man_args(sect, page))
+  if empty(out) || out[0] == ''
     call s:error('no manual entry for '.page.(empty(sect)?'':'('.sect.')'))
     return
   elseif page !~# '\/' " if page is not a path, parse the page and section from the path
-    let [page, sect] = s:parse_page_and_sect_path(path[0])
+    " use the last line because if we had something like printf(man) then man
+    " would be read as the manpage because man's path is at out[0]
+    let [page, sect] = s:parse_page_and_sect_path(out[len(out)-1])
   endif
 
   call s:push_tag()
@@ -97,13 +100,11 @@ function! s:find_neoman(cmd) abort
 endfunction
 
 " parses the page and sect out of 'page(sect)'
+" TODO need to look at neovim's internal K mapping to enhance thsi!
 function! s:parse_page_and_sect_fpage(fpage) abort
   let ret = split(a:fpage, '(')
-  if len(ret) == 2
+  if len(ret) > 1
     let iret = split(ret[1], ')')
-    if len(iret) == 0
-      return ['','']
-    endif
     return [ret[0], tolower(iret[0])]
   elseif len(ret) == 1
     return [ret[0], '']
@@ -118,14 +119,10 @@ function! s:parse_page_and_sect_path(path) abort
   if fnamemodify(tail, ':e') =~# s:man_extensions
     let tail = fnamemodify(tail, ':r')
   endif
+  " TODO all substitutes to matchlist/matchstr maybe?
   let page = substitute(tail, '^\(\f\+\)\..\+$', '\1', '')
   let sect = substitute(tail, '^\f\+\.\(.\+\)$', '\1', '')
   return [page, sect]
-endfunction
-
-" returns the path of a manpage
-function! s:find_page(sect, page) abort
-  return systemlist(s:man_cmd.s:man_find_arg.' '.s:man_args(a:sect, a:page))
 endfunction
 
 function! s:read_page(sect, page, cmd)
@@ -156,7 +153,7 @@ function! neoman#normalize_page()
   keepjumps 1
 endfunction
 
-function s:man_args(sect, page) abort
+function! s:man_args(sect, page) abort
   if !empty(a:sect)
     return s:man_sect_arg.' '.shellescape(a:sect).' '.shellescape(a:page)
   endif
@@ -171,6 +168,8 @@ function! s:error(msg) abort
   echohl None
 endfunction
 
+" TODO
+" fix 'Nman 0<TAB>'
 function! neoman#complete(ArgLead, CmdLine, CursorPos) abort
   let args = split(a:CmdLine)
   let l = len(args)

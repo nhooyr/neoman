@@ -14,16 +14,16 @@ function! s:new_tab()
   endif
 endfunction
 
-command! -complete=customlist,neoman#complete -nargs=* Nman call
-      \ neoman#get_page('edit', <f-args>)
-command! -complete=customlist,neoman#complete -nargs=* Snman call
-      \ neoman#get_page('split', <f-args>)
-command! -complete=customlist,neoman#complete -nargs=* Vnman call
-      \ neoman#get_page('vsplit', <f-args>)
-command! -complete=customlist,neoman#complete -nargs=* Tnman call
-      \ neoman#get_page(<SID>new_tab(), <f-args>)
+command! -count=0 -complete=customlist,neoman#complete -nargs=* Nman call
+      \ neoman#get_page(<count>, 'edit', <f-args>)
+command! -count=0 -complete=customlist,neoman#complete -nargs=* Snman call
+      \ neoman#get_page(<count>, 'split', <f-args>)
+command! -count=0 -complete=customlist,neoman#complete -nargs=* Vnman call
+      \ neoman#get_page(<count>, 'vsplit', <f-args>)
+command! -count=0 -complete=customlist,neoman#complete -nargs=* Tnman call
+      \ neoman#get_page(<count>, <SID>new_tab(), <f-args>)
 
-nnoremap <silent> <Plug>(Nman)  :<C-U>call neoman#get_page('edit')<CR>
-nnoremap <silent> <Plug>(Snman)  :<C-U>call neoman#get_page('split')<CR>
-nnoremap <silent> <Plug>(Vnman)  :<C-U>call neoman#get_page('vsplit')<CR>
-nnoremap <silent> <Plug>(Tnman)  :<C-U>call neoman#get_page(<SID>new_tab())<CR>
+nnoremap <silent> <Plug>(Nman)  :call neoman#get_page(v:count, 'edit')<CR>
+nnoremap <silent> <Plug>(Snman)  :call neoman#get_page(v:count, 'split')<CR>
+nnoremap <silent> <Plug>(Vnman)  :call neoman#get_page(v:count, 'vsplit')<CR>
+nnoremap <silent> <Plug>(Tnman)  :call neoman#get_page(v:count, <SID>new_tab())<CR>
