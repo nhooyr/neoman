@@ -129,3 +129,4 @@ TODO:
 - [ ] add count feature (count is the section)
 - [ ] fix autocomplete bug with vim/neovim
 - [ ] merge with neovim!!!
+- [ ] See https://www.reddit.com/r/vim/comments/45b7s6/neoman_a_modern_plugin_for_using_vim_as_a_man/ for more advice
