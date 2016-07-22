@@ -137,11 +137,11 @@ function! s:read_page(sect, page, cmd)
   let $MANWIDTH = winwidth(0)-1
   " read manpage into buffer
   silent execute 'r!'.s:man_cmd.s:man_args(a:sect, a:page)
-  call neoman#normalizeBuffer()
+  call neoman#normalize_page()
   setlocal filetype=neoman
 endfunction
 
-function! neoman#normalizeBuffer()
+function! neoman#normalize_page()
   " remove all those backspaces
   execute "silent keepjumps %substitute,.\b,,g"
   " remove blank lines from top and bottom.

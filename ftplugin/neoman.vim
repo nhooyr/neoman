@@ -5,7 +5,7 @@ let b:did_ftplugin = 1
 
 if expand('%') !~# '^man:\/\/'
   silent execute 'file '.'man://'.tolower(substitute(getline(1), '^\(\S\+\).*$', '\1', 0))
-  call neoman#normalizeBuffer()
+  call neoman#normalize_page()
 endif
 
 setlocal buftype=nofile
