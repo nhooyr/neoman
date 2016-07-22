@@ -210,8 +210,7 @@ function! neoman#complete(ArgLead, CmdLine, CursorPos) abort
 endfunction
 
 function! s:get_candidates(page, sect, fpage) abort
-  let mandirs = s:MANDIRS()
-  let candidates = globpath(mandirs,'*/'.a:page.'*.'.a:sect.'*', 0, 1)
+  let candidates = globpath(s:MANDIRS(),'*/'.a:page.'*.'.a:sect.'*', 0, 1)
   let find = '\(.\+\)\.\%('.s:man_extensions.'\)\@!\'
   " if the page is a path, complete files
   if empty(a:sect) && a:page =~# '\/'
