@@ -7,7 +7,7 @@ Read manpages faster than superman!
 ## Features
 - Smart manpage autocompletion
 - Open in a split/vsplit/tabe/current window
-- Control whether or not to jump to closest (above/left) neoman window with the bang
+- Control whether or not to jump to closest (above/left) neoman window
 - Open from inside a neovim terminal!
 - Jump to manpages in specific sections through the manpage links
 - Aware of modern manpages, e.g. sections are not just 1-8 anymore
@@ -27,10 +27,10 @@ Plug 'nhooyr/neoman.vim' "vim-plug
 The command is as follows:
 
 ```vim
-Nman[!] " display man page for <cWORD>
-Nman[!] [sect] page
-Nman[!] page[(sect)]
-Nman[!] path " if in current directory, start path with ./
+Nman " display man page for <cWORD>
+Nman [sect] page
+Nman page[(sect)]
+Nman path " if in current directory, start path with ./
 ```
 
 Several ways to use it, probably easier to explain with a few examples.
@@ -51,8 +51,6 @@ For splitting there are the following commands (exact same syntax as `Nman`)
 :Vnman 3 printf "verical split
 :Tnman 3 printf "in a new tab
 ```
-
-See `g:neoman_find_window` under settings for an explanation of the bang.
 
 ### Mappings
 ####Default Mappings
@@ -107,7 +105,7 @@ source /somepath/neoman.vim/scripts/vim.fish
 
 ### Settings
 `g:neoman_find_window`  
-If this option is set, neoman will first attempt to find the current neoman window before opening a new one. The bang on `:Nman` will alternate on this behavior. So if this option is set, the bang will make it act like as if it is not set, and vice versa.  
+If this option is set, neoman will first attempt to find the current neoman window before opening a new one.
 By default this is set.
 
 `g:neoman_tab_after`  
@@ -125,7 +123,7 @@ TODO:
 - [x] Rewrite for clean code, check PR #15 to test it!
 - [x] Update fish script
 - [ ] document plug mappings
-- [ ] remove bang
+- [x] remove bang
 - [ ] add count feature (count is the section)
 - [ ] fix autocomplete bug with vim/neovim
 - [ ] merge with neovim!!!

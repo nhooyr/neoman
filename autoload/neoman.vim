@@ -23,7 +23,7 @@ catch /E145:/
   " Ignore the error in restricted mode
 endtry
 
-function! neoman#get_page(bang, editcmd, ...) abort
+function! neoman#get_page(editcmd, ...) abort
   if a:0 > 2
     call s:error('too many arguments')
     return
@@ -55,13 +55,7 @@ function! neoman#get_page(bang, editcmd, ...) abort
 
   call s:push_tag()
 
-  if g:neoman_find_window != a:bang && &filetype !=# 'neoman'
-    let cmd = s:find_neoman(a:editcmd)
-  else
-    let cmd = a:editcmd
-  endif
-
-  call s:read_page(sect, page, cmd)
+  call s:read_page(sect, page, a:editcmd)
 endfunction
 
 " move to previous position in the stack
@@ -84,6 +78,9 @@ endfunction
 
 " find the closest neoman window above/left
 function! s:find_neoman(cmd) abort
+  if g:neoman_find_window != 1 || &filetype ==# 'neoman'
+    return a:cmd
+  endif
   if winnr('$') > 1
     let thiswin = winnr()
     while 1
@@ -91,7 +88,9 @@ function! s:find_neoman(cmd) abort
         return 'edit'
       endif
       wincmd w
-      if thiswin == winnr() | break | endif
+      if thiswin == winnr()
+        return a:cmd
+      endif
     endwhile
   endif
   return a:cmd
@@ -130,7 +129,7 @@ function! s:find_page(sect, page) abort
 endfunction
 
 function! s:read_page(sect, page, cmd)
-  silent execute a:cmd 'man://'.a:page.(empty(a:sect)?'':'('.a:sect.')')
+  silent execute s:find_neoman(a:cmd) 'man://'.a:page.(empty(a:sect)?'':'('.a:sect.')')
   setlocal modifiable
   " remove all the text, incase we already loaded the manpage before
   silent keepjumps %delete _
@@ -149,6 +148,8 @@ function! neoman#normalize_page()
     silent keepjumps 1delete _
   endwhile
   " TODO is deleting the bottom lines necessary?
+  " TODO I think only deleting the first line is necessary when using r! to
+  " read manpage in.
   while getline('$') =~# '^\s*$'
     silent keepjumps $delete _
   endwhile
