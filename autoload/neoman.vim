@@ -168,8 +168,6 @@ function! s:error(msg) abort
   echohl None
 endfunction
 
-" TODO
-" fix 'Nman 0<TAB>'
 function! neoman#complete(ArgLead, CmdLine, CursorPos) abort
   let args = split(a:CmdLine)
   let l = len(args)
