@@ -30,3 +30,5 @@ if !exists('g:no_plugin_maps') && !exists('g:no_neoman_maps')
   nnoremap <silent> <buffer> <C-t>    :call neoman#pop_tag()<CR>
   nnoremap <silent> <nowait><buffer>  q :q<CR>
 endif
+
+let b:undo_ftplugin = ''
