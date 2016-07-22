@@ -77,7 +77,7 @@ nnoremap <leader>mv :Vnman<Space>
 ```
 
 ### Command line integration
-You can simply set
+For vim (or neovim if you do not want terminal integration) you can simply set:
 
 ```zsh
 export MANPAGER="nvim -c 'set ft=neoman' -"
@@ -85,23 +85,16 @@ export MANPAGER="nvim -c 'set ft=neoman' -"
 
 To use it with `man`.
 
-However, you will need [nvr](https://github.com/mhinz/neovim-remote) for the super cool neovim terminal integration.
+If you want the super cool terminal integration, you will need [nvr](https://github.com/mhinz/neovim-remote)
 
-Use `nman`/`nman!` to open the manpages. `nman!` works the same way as `:Nman!`, but obviously its only available for neovim. You have to be connected remotely in order to find the neoman window, otherwise it doesn't matter, see `g:neoman_find_window`.
+Add the correct one to your `.zshrc`, w`.bashrc` or `config.fish`
 
-#### zsh/bash
-Add one to your `.zshrc`/`.bashrc`
 ```zsh
-source /somepath/neoman.vim/scripts/neovim.zsh
-source /somepath/neoman.vim/scripts/vim.zsh
+source /somepath/neoman.vim/scripts/nman.zsh # or bash
+source /somepath/neoman.vim/scripts/nman.fish
 ```
 
-#### fish
-Add one to your `config.fish`
-```fish
-source /somepath/neoman.vim/scripts/neovim.fish
-source /somepath/neoman.vim/scripts/vim.fish
-```
+Now just use `nman` to open the manpages from within neovim!
 
 ### Settings
 `g:neoman_find_window`  
@@ -115,7 +108,7 @@ If set, `:Tnman` will open a tab just after the current one, instead of just bef
 If set, no mappings are made in neoman buffers. By default it is not set.
 
 ## Contributing
-I'm very open to new ideas, new features, anything really ;) . Open up an issue, send me a PR, or email.
+I'm very open to new ideas, new features. Open up an issue, send me a PR or an email.
 
 TODO:
 -----
@@ -124,7 +117,8 @@ TODO:
 - [x] Update fish script
 - [ ] document plug mappings
 - [x] remove bang
-- [ ] add count feature (count is the section)
+- [x] add count feature (count is the section)
 - [ ] fix autocomplete bug with vim/neovim
 - [ ] merge with neovim!!!
 - [ ] See https://www.reddit.com/r/vim/comments/45b7s6/neoman_a_modern_plugin_for_using_vim_as_a_man/ for more advice
+- [ ] Bash specific script, not neovim.zsh

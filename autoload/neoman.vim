@@ -26,24 +26,17 @@ function! neoman#get_page(count, editcmd, ...) abort
   if a:0 > 2
     call s:error('too many arguments')
     return
-  elseif a:0 == 2
+  elseif a:0 == 0
+    call s:error('what manual page do you want?')
+    return
+  elseif a:0 == 1
+    let [page, sect] = s:parse_page_and_sect_fpage(a:000[0])
+    if empty(sect) && a:count != 10
+      let sect = a:count
+    endif
+  else
     let sect = tolower(a:000[0])
     let page = a:000[1]
-  else
-    " fpage is a string like 'printf(2)' or just 'printf'
-    " if no argument, use the word under the cursor
-    let fpage = get(a:000, 0, expand('<cWORD>'))
-    if empty(fpage)
-      call s:error('no WORD under cursor')
-      return
-    endif
-    let [page, sect] = s:parse_page_and_sect_fpage(fpage)
-    if empty(page)
-      call s:error('invalid manpage name '.fpage)
-      return
-    elseif empty(sect) && a:count != 0
-      let sect = string(a:count)
-    endif
   endif
 
   let out = systemlist(s:man_cmd.s:man_find_arg.' '.s:man_args(sect, page))
@@ -100,16 +93,13 @@ function! s:find_neoman(cmd) abort
 endfunction
 
 " parses the page and sect out of 'page(sect)'
-" TODO need to look at neovim's internal K mapping to enhance thsi!
 function! s:parse_page_and_sect_fpage(fpage) abort
   let ret = split(a:fpage, '(')
   if len(ret) > 1
     let iret = split(ret[1], ')')
     return [ret[0], tolower(iret[0])]
-  elseif len(ret) == 1
-    return [ret[0], '']
   else
-    return ['', '']
+    return [ret[0], '']
   endif
 endfunction
 
