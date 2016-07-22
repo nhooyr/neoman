@@ -4,11 +4,11 @@ endif
 let b:did_ftplugin = 1
 
 if expand('%') !~# '^man:\/\/'
-  file 'man://'.tolower(substitute(getline(1), '^\(\S\+\).*$', '\1', 0))
+  silent execute 'file '.'man://'.tolower(substitute(getline(1), '^\(\S\+\).*$', '\1', 0))
 endif
 
 " remove all those backspaces
-execute "silent! keepjumps %substitute,.\b,,g"
+execute "silent keepjumps %substitute,.\b,,g"
 " remove blank lines from top and bottom.
 while getline(1) =~# '^\s*$'
   silent keepjumps 1delete _
