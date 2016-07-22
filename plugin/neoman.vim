@@ -14,11 +14,11 @@ function! s:new_tab()
   endif
 endfunction
 
-command! -bang -complete=customlist,neoman#Complete -nargs=* Nman call
+command! -bang -complete=customlist,neoman#complete -nargs=* Nman call
       \ neoman#get_page(<bang>0, 'edit', <f-args>)
-command! -bang -complete=customlist,neoman#Complete -nargs=* Snman call
+command! -bang -complete=customlist,neoman#complete -nargs=* Snman call
       \ neoman#get_page(<bang>0, 'split', <f-args>)
-command! -bang -complete=customlist,neoman#Complete -nargs=* Vnman call
+command! -bang -complete=customlist,neoman#complete -nargs=* Vnman call
       \ neoman#get_page(<bang>0, 'vsplit', <f-args>)
-command! -bang -complete=customlist,neoman#Complete -nargs=* Tnman call
+command! -bang -complete=customlist,neoman#complete -nargs=* Tnman call
       \ neoman#get_page(<bang>0, <SID>new_tab(), <f-args>)

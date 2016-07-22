@@ -5,18 +5,8 @@ let b:did_ftplugin = 1
 
 if expand('%') !~# '^man:\/\/'
   silent execute 'file '.'man://'.tolower(substitute(getline(1), '^\(\S\+\).*$', '\1', 0))
+  call neoman#normalizeBuffer()
 endif
-
-" remove all those backspaces
-execute "silent keepjumps %substitute,.\b,,g"
-" remove blank lines from top and bottom.
-while getline(1) =~# '^\s*$'
-  silent keepjumps 1delete _
-endwhile
-while getline('$') =~# '^\s*$'
-  silent keepjumps $delete _
-endwhile
-keepjumps 1
 
 setlocal buftype=nofile
 setlocal noswapfile

@@ -79,22 +79,30 @@ nnoremap <leader>mv :Vnman<Space>
 ```
 
 ### Command line integration
-You will need [nvr](https://github.com/mhinz/neovim-remote) for the super cool neovim terminal integration.
+You can simply set
+
+```zsh
+export MANPAGER="nvim -c 'set ft=neoman' -"
+```
+
+To use it with `man`.
+
+However, you will need [nvr](https://github.com/mhinz/neovim-remote) for the super cool neovim terminal integration.
 
 Use `nman`/`nman!` to open the manpages. `nman!` works the same way as `:Nman!`, but obviously its only available for neovim. You have to be connected remotely in order to find the neoman window, otherwise it doesn't matter, see `g:neoman_find_window`.
 
 #### zsh/bash
 Add one to your `.zshrc`/`.bashrc`
 ```zsh
-source /somepath/neoman.vim/scripts/neovim.zsh  #if neovim
-source /somepath/neoman.vim/scripts/vim.zsh     #if vim
+source /somepath/neoman.vim/scripts/neovim.zsh
+source /somepath/neoman.vim/scripts/vim.zsh
 ```
 
 #### fish
 Add one to your `config.fish`
 ```fish
-source /somepath/neoman.vim/scripts/neovim.fish #if neovim
-source /somepath/neoman.vim/scripts/vim.fish    #if vim
+source /somepath/neoman.vim/scripts/neovim.fish
+source /somepath/neoman.vim/scripts/vim.fish
 ```
 
 ### Settings

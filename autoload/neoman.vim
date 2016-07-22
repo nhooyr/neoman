@@ -137,7 +137,22 @@ function! s:read_page(sect, page, cmd)
   let $MANWIDTH = winwidth(0)-1
   " read manpage into buffer
   silent execute 'r!'.s:man_cmd.s:man_args(a:sect, a:page)
+  call neoman#normalizeBuffer()
   setlocal filetype=neoman
+endfunction
+
+function! neoman#normalizeBuffer()
+  " remove all those backspaces
+  execute "silent keepjumps %substitute,.\b,,g"
+  " remove blank lines from top and bottom.
+  while getline(1) =~# '^\s*$'
+    silent keepjumps 1delete _
+  endwhile
+  " TODO is deleting the bottom lines necessary?
+  while getline('$') =~# '^\s*$'
+    silent keepjumps $delete _
+  endwhile
+  keepjumps 1
 endfunction
 
 function s:man_args(sect, page) abort
@@ -155,7 +170,7 @@ function! s:error(msg) abort
   echohl None
 endfunction
 
-function! neoman#Complete(ArgLead, CmdLine, CursorPos) abort
+function! neoman#complete(ArgLead, CmdLine, CursorPos) abort
   let args = split(a:CmdLine)
   let l = len(args)
   " if the cursor (|) is at ':Nman printf(|' then
