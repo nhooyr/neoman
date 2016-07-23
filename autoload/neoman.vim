@@ -135,7 +135,7 @@ function! neoman#normalize_page()
     silent keepjumps 1delete _
   endwhile
   " TODO is deleting the bottom lines necessary?
-  " TODO I think only deleting the first line is necessary when using r! to
+  " I think only deleting the first line is necessary when using r! to
   " read manpage in.
   while getline('$') =~# '^\s*$'
     silent keepjumps $delete _

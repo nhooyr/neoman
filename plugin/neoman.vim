@@ -23,7 +23,7 @@ command! -count=10 -complete=customlist,neoman#complete -nargs=* Vnman call
 command! -count=10 -complete=customlist,neoman#complete -nargs=* Tnman call
       \ neoman#get_page(<count>, <SID>new_tab(), <f-args>)
 
-nnoremap <silent> <Plug>(Nman)  :call neoman#get_page(v:count, 'edit')<CR>
-nnoremap <silent> <Plug>(Snman)  :call neoman#get_page(v:count, 'split')<CR>
-nnoremap <silent> <Plug>(Vnman)  :call neoman#get_page(v:count, 'vsplit')<CR>
-nnoremap <silent> <Plug>(Tnman)  :call neoman#get_page(v:count, <SID>new_tab())<CR>
+nnoremap <silent> <Plug>(Nman)  :<C-U>call neoman#get_page(v:count, 'edit', expand('<cWORD>'))<CR>
+nnoremap <silent> <Plug>(Snman)  :<C-U>call neoman#get_page(v:count, 'split', expand('<cWORD>'))<CR>
+nnoremap <silent> <Plug>(Vnman)  :<C-U>call neoman#get_page(v:count, 'vsplit', expand('<cWORD>'))<CR>
+nnoremap <silent> <Plug>(Tnman)  :<C-U>call neoman#get_page(v:count, <SID>new_tab(), expand('<cWORD>'))<CR>

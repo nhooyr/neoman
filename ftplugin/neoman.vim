@@ -23,11 +23,13 @@ setlocal shiftwidth=8
 setlocal nolist
 setlocal foldcolumn=0
 setlocal colorcolumn=0
-setlocal keywordprg=:Nman
 
 " TODO default mappings with <Plug>
 if !exists('g:no_plugin_maps') && !exists('g:no_neoman_maps')
-  nnoremap <silent> <buffer> <C-]> K
+  nnoremap <silent> <buffer> <C-]>    :<C-U>call neoman#get_page(v:count, 'edit', expand('<cWORD>'))<CR>
+  if &keywordprg !=# ':Nman'
+    nmap   <silent> <buffer> <K>      <C-]>
+  endif
   nnoremap <silent> <buffer> <C-t>    :call neoman#pop_tag()<CR>
   nnoremap <silent> <nowait><buffer>  q :q<CR>
 endif
