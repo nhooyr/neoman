@@ -110,7 +110,7 @@ function! s:parse_page_and_sect_path(path) abort
     let tail = fnamemodify(tail, ':r')
   endif
   let page = matchstr(tail, '^\f\+\ze\.')
-  let sect = matchstr(tail, '\.\zs.\+$')
+  let sect = matchstr(tail, '\.\zs[^.]\+$')
   return [page, sect]
 endfunction
 
