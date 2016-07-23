@@ -157,8 +157,8 @@ function! s:error(msg) abort
   echohl None
 endfunction
 
-function! neoman#complete(ArgLead, CmdLine, CursorPos) abort
-  let args = split(a:CmdLine)
+function! neoman#complete(arg_lead, cmd_line, cursor_pos) abort
+  let args = split(a:cmd_line)
   let l = len(args)
   " if the cursor (|) is at ':Nman printf(|' then
   " make sure to display the section. See s:get_candidates
@@ -168,25 +168,25 @@ function! neoman#complete(ArgLead, CmdLine, CursorPos) abort
     return
   elseif l == 3
     " cursor (|) is at ':Nman 3 printf |'
-    if empty(a:ArgLead)
+    if empty(a:arg_lead)
       return
     endif
     let sect = tolower(args[1])
-    let page = a:ArgLead
+    let page = a:arg_lead
   elseif l == 2
     " cursor (|) is at ':Nman 3 |'
-    if empty(a:ArgLead)
+    if empty(a:arg_lead)
       let page = ''
       let sect = tolower(args[1])
-    elseif a:ArgLead =~# '^\f\+(\f*$'
+    elseif a:arg_lead =~# '^\f\+(\f*$'
       " cursor (|) is at ':Nman printf(|'
-      let tmp = split(a:ArgLead, '(')
+      let tmp = split(a:arg_lead, '(')
       let page = tmp[0]
       let sect = tolower(get(tmp, 1, ''))
       let fpage = 1
     else
       " cursor (|) is at ':Nman printf|'
-      let page = a:ArgLead
+      let page = a:arg_lead
       let sect = ''
     endif
   else
@@ -197,7 +197,6 @@ function! neoman#complete(ArgLead, CmdLine, CursorPos) abort
 endfunction
 
 function! s:init_mandirs() abort
-  " gets list of MANDIRS
   let mandirs_list = split(system(s:man_cmd.s:man_find_arg), ':\|\n')
   " removes duplicates and then join by comma
   let s:mandirs = join(filter(mandirs_list, 'index(mandirs_list, v:val, v:key+1)==-1'), ',')
