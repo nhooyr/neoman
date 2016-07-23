@@ -24,7 +24,6 @@ setlocal nolist
 setlocal foldcolumn=0
 setlocal colorcolumn=0
 
-" TODO default mappings with <Plug>
 if !exists('g:no_plugin_maps') && !exists('g:no_neoman_maps')
   nnoremap <silent> <buffer> <C-]>    :<C-U>call neoman#get_page(v:count, 'edit', expand('<cWORD>'))<CR>
   if &keywordprg !=# ':Nman'
