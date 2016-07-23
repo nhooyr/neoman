@@ -199,7 +199,7 @@ endfunction
 
 function! s:get_candidates(page, sect, fpage) abort
   let candidates = globpath(s:MANDIRS(),'*/'.a:page.'*.'.a:sect.'*', 0, 1)
-  call filter(candidates, "(v:val =~# a:sect.'$' && v:val !~# s:man_extensions.'$' ) || (v:val =~# s:man_extensions.'$' && fnameescape(v:val, ':r') =~# a:sect.'$')")
+  call filter(candidates, "(v:val =~# a:sect.'$' && v:val !~# s:man_extensions.'$' ) || (v:val =~# s:man_extensions.'$' && fnamemodify(v:val, ':r') =~# a:sect.'$')")
   " if the page is a path, complete files
   if empty(a:sect) && a:page =~# '\/'
     "TODO why does this complete the last one automatically
