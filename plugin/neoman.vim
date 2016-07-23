@@ -3,8 +3,7 @@ if exists('g:loaded_neoman')
 endif
 let g:loaded_neoman = 1
 
-let g:neoman_find_window =
-      \ get( g:, 'neoman_find_window', 1 )
+let g:neoman_find_window = get(g:, 'neoman_find_window', 1 )
 
 function! s:new_tab()
   if get( g:, 'neoman_tab_after', 0 ) == 1
