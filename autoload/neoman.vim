@@ -199,12 +199,13 @@ endfunction
 
 function! s:get_candidates(page, sect, fpage) abort
   let candidates = globpath(s:MANDIRS(),'*/'.a:page.'*.'.a:sect.'*', 0, 1)
-  let find = '\(.\+\)\.\%('.s:man_extensions.'\)\@!\'
+  call filter(candidates, "(v:val =~# a:sect.'$' && v:val !~# s:man_extensions.'$' ) || (v:val =~# s:man_extensions.'$' && fnameescape(v:val, ':r') =~# a:sect.'$')")
   " if the page is a path, complete files
   if empty(a:sect) && a:page =~# '\/'
     "TODO why does this complete the last one automatically
     let candidates = glob(a:page.'*', 0, 1)
   else
+    let find = '\(.\+\)\.\%('.s:man_extensions.'\)\@!\'
     " if the section is not empty and the cursor (|) is not at
     " ':Nman printf(|' then do not show sections.
     if !empty(a:sect) && !a:fpage
