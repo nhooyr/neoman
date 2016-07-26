@@ -119,7 +119,17 @@ function! s:read_page(sect, page, cmd)
   " TODO perhaps do not load, merely redisplay?
   " remove all the text, incase we already loaded the manpage before
   keepjumps %delete _
-  let $MANWIDTH = winwidth(0)-1
+  if &number
+    if len(line('$')) > &numberwidth
+      let line_offset = len(line('$'))
+    else
+      let line_offset = &numberwidth
+    endif
+  elseif &relativenumber
+    let line_offset = len(winheight(0))
+  endif
+  " TODO find a way to include sign column
+  let $MANWIDTH = winwidth(0)-&foldcolumn-line_offset
   " read manpage into buffer
   silent execute 'r!'.s:man_cmd.s:man_args(a:sect, a:page)
   " remove all those backspaces
