@@ -123,8 +123,8 @@ function! s:read_page(sect, page, cmd)
   " read manpage into buffer
   silent execute 'r!'.s:man_cmd.s:man_args(a:sect, a:page)
   " remove all those backspaces
-  silent execute 'keepjumps %substitute,.\b,,ge'
-  keepjumps 1delete _
+  silent keeppatterns keepjumps %substitute,.\b,,ge
+  silent keepjumps 1delete _
   setlocal filetype=neoman
 endfunction
 

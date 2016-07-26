@@ -8,7 +8,7 @@ let s:pager = 0
 if expand('%') !~# '^man:\/\/'
   let s:pager = 1
   " remove all those backspaces
-  silent execute 'keepjumps %substitute,.\b,,ge'
+  silent keeppatterns keepjumps %substitute,.\b,,ge
   execute 'file '.'man://'.tolower(matchstr(getline(1), '^\S\+'))
   keepjumps 1
 endif
