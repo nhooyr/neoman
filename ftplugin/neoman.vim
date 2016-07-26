@@ -3,7 +3,10 @@ if exists('b:did_ftplugin')
 endif
 let b:did_ftplugin = 1
 
+let s:pager = 0
+
 if expand('%') !~# '^man:\/\/'
+  let s:pager = 1
   " remove all those backspaces
   silent execute 'keepjumps %substitute,.\b,,ge'
   execute 'file '.'man://'.tolower(matchstr(getline(1), '^\S\+'))
@@ -27,12 +30,16 @@ setlocal foldcolumn=0
 setlocal colorcolumn=0
 
 if !exists('g:no_plugin_maps') && !exists('g:no_neoman_maps')
-  nnoremap <silent> <buffer> <C-]>    :<C-U>call neoman#get_page(v:count, 'edit', expand('<cWORD>'))<CR>
+  nnoremap <silent> <buffer> <C-]>      :<C-U>call neoman#get_page(v:count, 'edit', expand('<cWORD>'))<CR>
   if &keywordprg !=# ':Nman'
-    nmap   <silent> <buffer> <K>      <C-]>
+    nmap   <silent> <buffer> <K>        <C-]>
   endif
-  nnoremap <silent> <buffer> <C-t>    :call neoman#pop_tag()<CR>
-  nnoremap <silent> <nowait><buffer>  q :q<CR>
+  nnoremap <silent> <buffer> <C-t>      :call neoman#pop_tag()<CR>
+  if s:pager
+    nnoremap <silent> <buffer> <nowait> q :q<CR>
+  else
+    nnoremap <silent> <buffer> <nowait> q <C-W>c
+  endif
 endif
 
 let b:undo_ftplugin = ''
