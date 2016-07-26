@@ -114,31 +114,18 @@ function! s:parse_page_and_sect_path(path) abort
 endfunction
 
 function! s:read_page(sect, page, cmd)
-  silent execute s:find_neoman(a:cmd) 'man://'.a:page.(s:empty_sect(a:sect)?'':'('.a:sect.')')
+  execute s:find_neoman(a:cmd) 'man://'.a:page.(s:empty_sect(a:sect)?'':'('.a:sect.')')
   setlocal modifiable
+  " TODO perhaps do not load, merely redisplay?
   " remove all the text, incase we already loaded the manpage before
-  silent keepjumps %delete _
+  keepjumps %delete _
   let $MANWIDTH = winwidth(0)-1
   " read manpage into buffer
   silent execute 'r!'.s:man_cmd.s:man_args(a:sect, a:page)
-  call neoman#normalize_page()
-  setlocal filetype=neoman
-endfunction
-
-function! neoman#normalize_page()
   " remove all those backspaces
-  execute "silent keepjumps %substitute,.\b,,ge"
-  " remove blank lines from top and bottom.
-  while getline(1) =~# '^\s*$'
-    silent keepjumps 1delete _
-  endwhile
-  " TODO is deleting the bottom lines necessary?
-  " I think only deleting the first line is necessary when using r! to
-  " read manpage in.
-  while getline('$') =~# '^\s*$'
-    silent keepjumps $delete _
-  endwhile
-  keepjumps 1
+  silent execute 'keepjumps %substitute,.\b,,ge'
+  keepjumps 1delete _
+  setlocal filetype=neoman
 endfunction
 
 function! s:man_args(sect, page) abort

@@ -13,6 +13,7 @@ function! s:new_tab()
   endif
 endfunction
 
+" TODO(nhooyr) using a default count of 10 is a very inelegant solution
 command! -count=10 -complete=customlist,neoman#complete -nargs=* Nman call
       \ neoman#get_page(<count>, 'edit', <f-args>)
 command! -count=10 -complete=customlist,neoman#complete -nargs=* Snman call

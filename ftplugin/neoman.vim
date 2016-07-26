@@ -4,8 +4,10 @@ endif
 let b:did_ftplugin = 1
 
 if expand('%') !~# '^man:\/\/'
-  call neoman#normalize_page()
-  silent execute 'file '.'man://'.tolower(matchstr(getline(1), '^\S\+'))
+  " remove all those backspaces
+  silent execute 'keepjumps %substitute,.\b,,ge'
+  execute 'file '.'man://'.tolower(matchstr(getline(1), '^\S\+'))
+  keepjumps 1
 endif
 
 setlocal buftype=nofile
