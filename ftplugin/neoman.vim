@@ -28,6 +28,9 @@ setlocal shiftwidth=8
 setlocal nolist
 setlocal foldcolumn=0
 setlocal colorcolumn=0
+setlocal nonumber
+setlocal norelativenumber
+setlocal foldcolumn=0
 
 if !exists('g:no_plugin_maps') && !exists('g:no_neoman_maps')
   nnoremap <silent> <buffer> <C-]>      :<C-U>call neoman#get_page(v:count, 'edit', expand('<cWORD>'))<CR>
