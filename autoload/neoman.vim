@@ -41,7 +41,8 @@ function! neoman#get_page(count, editcmd, ...) abort
   if empty(out) || out[0] == ''
     call s:error('no manual entry for '.page.(s:empty_sect(sect)?'':'('.sect.')'))
     return
-  elseif page !~# '\/' " if page is not a path, parse the page and section from the path
+  elseif page !~# '\/'
+    " if page is not a path, parse the page and section from the path
     " use the last line because if we had something like printf(man) then man
     " would be read as the manpage because man's path is at out[0]
     let [page, sect] = s:parse_page_and_sect_path(out[len(out)-1])
@@ -120,16 +121,17 @@ function! s:read_page(sect, page, cmd)
   " remove all the text, incase we already loaded the manpage before
   keepjumps %delete _
   if &number
-    if len(line('$')) > &numberwidth
-      let line_offset = len(line('$'))
-    else
-      let line_offset = &numberwidth
-    endif
+    let num_offset = max([&numberwidth, len(line('$'))+1]) " added one for space before text
   elseif &relativenumber
-    let line_offset = len(winheight(0))
+    let num_offset = max([&numberwidth, len(winheight(0))+1]) " added one for space before text
+  else
+    let num_offset = 0
   endif
   " TODO find a way to include sign column
-  let $MANWIDTH = winwidth(0)-&foldcolumn-line_offset
+  let text_width = winwidth(0)-&foldcolumn-num_offset
+  if $MANWIDTH < text_width
+    let $MANWIDTH = text_width
+  endif
   " read manpage into buffer
   silent execute 'r!'.s:man_cmd.s:man_args(a:sect, a:page)
   " remove all those backspaces
