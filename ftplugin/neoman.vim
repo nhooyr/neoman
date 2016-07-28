@@ -5,7 +5,7 @@ let b:did_ftplugin = 1
 
 let s:pager = 0
 
-if expand('%') !~# '^man:\/\/'
+if has('vim_starting')
   let s:pager = 1
   " remove all those backspaces
   silent keeppatterns keepjumps %substitute,.\b,,ge

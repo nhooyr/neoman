@@ -121,9 +121,9 @@ function! s:read_page(sect, page, cmd)
   " remove all the text, incase we already loaded the manpage before
   keepjumps %delete _
   if &number
-    let num_offset = max([&numberwidth, strwidth(line('$'))+1]) " added one for space before text
+    let num_offset = max([&numberwidth, strwidth(line('$'))+1]) " added one for the space before text
   elseif &relativenumber
-    let num_offset = max([&numberwidth, strwidth(winheight(0))+1]) " added one for space before text
+    let num_offset = max([&numberwidth, strwidth(winheight(0))+1]) " added one for the space before text
   else
     let num_offset = 0
   endif
