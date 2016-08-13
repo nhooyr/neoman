@@ -2,6 +2,8 @@
 
 Read manpages faster than superman!
 
+**note: A much improved version of this plugin is included by default in neovim!**
+
 ![neoman in action](https://media.giphy.com/media/xT0BKrEeXPeKVMgb84/giphy.gif)
 
 ## Features
