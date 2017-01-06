@@ -2,7 +2,7 @@
 
 Read manpages faster than superman!
 
-**note: A much improved version of this plugin is included by default in neovim!**
+**note: A much improved version of this plugin is included by default in neovim! see `:h man.vim`**
 
 ![neoman in action](https://media.giphy.com/media/xT0BKrEeXPeKVMgb84/giphy.gif)
 
