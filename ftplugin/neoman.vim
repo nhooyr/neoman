@@ -8,7 +8,7 @@ let s:pager = 0
 if has('vim_starting')
   let s:pager = 1
   " remove all those backspaces
-  silent keeppatterns keepjumps %substitute,.\b,,ge
+  silent execute 'keeppatterns keepjumps %substitute,.\b,,e'.(&gdefault?'':'g')
   execute 'file '.'man://'.tolower(matchstr(getline(1), '^\S\+'))
   keepjumps 1
 endif
