@@ -55,7 +55,9 @@ For splitting there are the following commands (exact same syntax as `Nman`)
 ```
 
 ### Mappings
-####Default Mappings
+
+#### Default Mappings
+
 `<C-]>` to jump to a manpage under the cursor.  
 `<C-t>` to jump back to the previous man page.  
 `q` to quit
